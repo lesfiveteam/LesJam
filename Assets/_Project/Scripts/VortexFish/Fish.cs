@@ -11,6 +11,7 @@ namespace FishingHim.VortexFish
     {
         [Header("Движение")]
         public float moveSpeed = 1f;
+        public float moveSmoothness = 0.8f;
         public float leftBound = -2f;
         public float rightBound = 2f;
         public float decelerationSpeed = 1f;
@@ -75,12 +76,14 @@ namespace FishingHim.VortexFish
         {
             if (movement != Vector3.zero)
             {
-                rb.AddForce(movement * moveSpeed, forceMode);
+                float horizontalMovement = movement.x;
+
+                rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, rb.linearVelocity.y);
             }
             else
             {
                 // Ничего не нажато
-                rb.linearVelocity = Vector3.zero;
+                rb.linearVelocity *= moveSmoothness;
             }
         }
 
