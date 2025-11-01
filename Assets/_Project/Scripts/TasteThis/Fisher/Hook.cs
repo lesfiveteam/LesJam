@@ -1,16 +1,29 @@
+using System;
 using UnityEngine;
+using static FishingHim.TasteThis.Item;
 
 public class Hook : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static Hook Instance { get; private set; }
+
+    private void Awake()
     {
-        
+        Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    public event EventHandler OnFishCaught;
+
+    public Vector2 GetHookPosition()
     {
-        
+        return (Vector2)transform.position;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<SmallFish>(out var fish))
+        {
+            Destroy(collision.gameObject);
+            OnFishCaught?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
