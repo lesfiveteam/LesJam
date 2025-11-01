@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,26 +9,30 @@ namespace FishingHim.VortexFish
      */
     public class Fish : MonoBehaviour
     {
-        [Header("Movement Settings")]
+        [Header("Движение")]
         public float moveSpeed = 1f;
         public float leftBound = -2f;
         public float rightBound = 2f;
         public float decelerationSpeed = 1f;
 
-        [Header("Physics Settings")]
+        [Header("Физика")]
         public ForceMode forceMode = ForceMode.VelocityChange;
+
+        [Header("Ярость")]
+        [SerializeField]
+        private float rageTime = 3f;
 
         private Rigidbody rb;
         private Vector3 movement;
+
+        public bool InRage { get; private set; }
 
         void Start()
         {
             rb = GetComponent<Rigidbody>();
             if (rb == null)
             {
-                rb = gameObject.AddComponent<Rigidbody>();
-                rb.useGravity = false;
-                rb.linearDamping = 5f;
+                Debug.LogError("Нет Rigidbody на Fish");
             }
         }
 
@@ -77,6 +82,33 @@ namespace FishingHim.VortexFish
                 // Ничего не нажато
                 rb.linearVelocity = Vector3.zero;
             }
+        }
+
+        /**
+         * Войти в ярость
+         */
+        public void EnterInRage()
+        {
+            Debug.Log("Вошел в ярость - доделайте меня");
+            InRage = true;
+        }
+
+        /**
+         * Выход из ярости
+         */
+        private void ExitFromRage()
+        {
+            Debug.Log("Вышел в ярость - доделайте меня");
+            InRage = false;
+        }
+
+        /**
+         * Подождать и выйти из ярости
+         */
+        private IEnumerator WaitAndExitFromRage()
+        {
+            yield return new WaitForSeconds(rageTime);
+            ExitFromRage();
         }
     }
 }
