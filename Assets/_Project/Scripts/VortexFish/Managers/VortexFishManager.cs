@@ -1,3 +1,5 @@
+using FishingHim.Common;
+using UnityEditor;
 using UnityEngine;
 
 namespace FishingHim.VortexFish.Manager
@@ -11,11 +13,11 @@ namespace FishingHim.VortexFish.Manager
 
         private int boostCount = 0;
         [SerializeField]
-        private int boostCountForRage = 3; // кол-во буста для входа в ярость
+        private int boostCountForRage = 3; // РєРѕР»-РІРѕ Р±СѓСЃС‚Р° РґР»СЏ РІС…РѕРґР° РІ СЏСЂРѕСЃС‚СЊ
 
         private int deadFishermanCount = 0;
         [SerializeField]
-        private int deadFishermanCountForWin = 3; // кол-во сбитых рыбаков для победы
+        private int deadFishermanCountForWin = 3; // РєРѕР»-РІРѕ СЃР±РёС‚С‹С… СЂС‹Р±Р°РєРѕРІ РґР»СЏ РїРѕР±РµРґС‹
 
         private void Start()
         {
@@ -28,18 +30,18 @@ namespace FishingHim.VortexFish.Manager
                 GameObject fishGb = GameObject.FindGameObjectWithTag("Player");
                 if (!fishGb)
                 {
-                    Debug.LogError("Не заполнен Fish! У Fish нет тега Player!");
+                    Debug.LogError("РќРµ Р·Р°РїРѕР»РЅРµРЅ Fish! РЈ Fish РЅРµС‚ С‚РµРіР° Player!");
                 }
                 Fish = fishGb.GetComponent<Fish>();
                 if (!Fish)
                 {
-                    Debug.LogError("Не заполнен Fish!");
+                    Debug.LogError("РќРµ Р·Р°РїРѕР»РЅРµРЅ Fish!");
                 }
             }
         }
 
         /**
-         * Прибавляет к количеству съеденного печенья +1
+         * РџСЂРёР±Р°РІР»СЏРµС‚ Рє РєРѕР»РёС‡РµСЃС‚РІСѓ СЃСЉРµРґРµРЅРЅРѕРіРѕ РїРµС‡РµРЅСЊСЏ +1
          */
         public void AddBoost()
         {
@@ -51,19 +53,22 @@ namespace FishingHim.VortexFish.Manager
             }
         }
         /**
-         * Прибавляет к количеству сбитых рыбаков
+         * РџСЂРёР±Р°РІР»СЏРµС‚ Рє РєРѕР»РёС‡РµСЃС‚РІСѓ СЃР±РёС‚С‹С… СЂС‹Р±Р°РєРѕРІ
          */
         public void AddDeadFisherman()
         {
             deadFishermanCount++;
             if (deadFishermanCount >= deadFishermanCountForWin)
             {
-                // Победа
-                Debug.Log("Реализуй победу, когда будет готов GameManager от Аллана");
+                // РџРѕР±РµРґР°
+                Debug.Log("Р РµР°Р»РёР·СѓР№ РїРѕР±РµРґСѓ, РєРѕРіРґР° Р±СѓРґРµС‚ РіРѕС‚РѕРІ GameManager РѕС‚ РђР»Р»Р°РЅР°");
+                //Win РїСЂРёРЅРёРјР°РµС‚ РЅРѕРјРµСЂ РјРёРЅРё-РёРіСЂС‹, СЃ РєРѕС‚РѕСЂС‹Рј РѕРЅР° Р°СЃСЃРѕС†РёРёСЂСѓРµС‚СЃСЏ РЅР° РіР»Р°РІРЅРѕРј СЌРєСЂР°РЅРµ
+                //Р•СЃР»Рё РІРґСЂСѓРі VortexFish РЅРµ Р±СѓРґРµС‚ РїРµСЂРІРѕР№ (СЃС‡РµС‚ РёРґРµС‚ СЃ РЅСѓР»СЏ) РїРѕ СЃС‡РµС‚Сѓ РёРіСЂРѕР№, Р·РЅР°С‡РµРЅРёРµ РЅР°РґРѕ РїРѕРјРµРЅСЏС‚СЊ
+                ProgressManager.instance.Win(0); 
             }
         }
         /**
-         * Возвращает истину, если игрок находится в состоянии ярости
+         * Р’РѕР·РІСЂР°С‰Р°РµС‚ РёСЃС‚РёРЅСѓ, РµСЃР»Рё РёРіСЂРѕРє РЅР°С…РѕРґРёС‚СЃСЏ РІ СЃРѕСЃС‚РѕСЏРЅРёРё СЏСЂРѕСЃС‚Рё
          */
         public static bool IsPlayerInRage()
         {

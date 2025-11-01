@@ -1,3 +1,4 @@
+using FishingHim.Common;
 using FishingHim.VortexFish.Manager;
 using UnityEngine;
 
@@ -11,12 +12,13 @@ namespace FishingHim.VortexFish.CollectedItem
             {
                 if (VortexFishManager.IsPlayerInRage())
                 {
-                    // Сбивает рыбаков
+                    // РЎР±РёРІР°РµС‚ СЂС‹Р±Р°РєРѕРІ
                     Destroy(gameObject);
                 }
                 else
                 {
-                    Debug.Log("Реализуй проигрыш, когда будет готов GameManager от Аллана");
+                    Debug.Log("Р РµР°Р»РёР·СѓР№ РїСЂРѕРёРіСЂС‹С€, РєРѕРіРґР° Р±СѓРґРµС‚ РіРѕС‚РѕРІ GameManager РѕС‚ РђР»Р»Р°РЅР°");
+                    ProgressManager.instance.Lose();
                 }
             }
         }
