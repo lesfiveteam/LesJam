@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -16,7 +18,8 @@ namespace FishingHim.TasteThis
         private float _inertiaMovementFactor = 1f, _inertiaRotationFactor = 1f;
         private float _speed;
         private Rigidbody2D _rb;
-        private Item _item;
+        private List<Item> _items = new();
+        private Item _takenItem;
         private float _capacity = 1f;
         private SpriteRenderer _renderer;
         private Vector2 _newSpeed;
@@ -74,15 +77,20 @@ namespace FishingHim.TasteThis
 
         private void OnInteract()
         {
-            if (_item == null)
+
+            if (_items.Count == 0 && _takenItem == null)
                 return;
 
-            if (_item.IsRaised())
-                _item.Drop();
+            if (_takenItem == null)
+            {
+                _takenItem = _items.Last();
+                _takenItem.Drag(transform);
+                _audioSource.Play();
+            }
             else
             {
-                _item.Drag(transform);
-                _audioSource.Play();
+                _takenItem.Drop();
+                _takenItem = null;
             }
         }
 
@@ -90,18 +98,15 @@ namespace FishingHim.TasteThis
         {
             if (collision.TryGetComponent<Item>(out var item))
             {
-                if (_item == null && _capacity >= item.Weight)
-                    _item = item;
+                if (_capacity >= item.Weight && !_items.Contains(item))
+                    _items.Add(item);
             }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.TryGetComponent<Item>(out var item))
-            {
-                if (_item == item)
-                    _item = null;
-            }
+                _items.Remove(item);
         }
 
         private void ItemCaught(Item _)
@@ -129,7 +134,5 @@ namespace FishingHim.TasteThis
         }
 
         private void SetSpeed() => _speed = _initialSpeed + _speedDelta * (_capacity);
-
-
     }
 }
