@@ -9,7 +9,8 @@ namespace FishingHim.FishAndFisherman.Timer
     public class TimerManager : MonoBehaviour
     {
         [Header("Timer Settings")]
-        [SerializeField] private float _nextSectionTime = 5f;
+        [SerializeField] private int _rotationsPerSection = 5;
+        [SerializeField] private float _sectionTransitionDelay = 2f;
         [SerializeField] private float _rotationSpeed = 2f;
         [SerializeField] private float _rotationDelta = 5f;
         [SerializeField] private float _rotationSpeedIncrease = 0.5f;
@@ -21,18 +22,19 @@ namespace FishingHim.FishAndFisherman.Timer
         private float _waitTimer = 0f;
         private bool _isWaiting = false;
         private bool _hasSpawnedHook = false;
+        private int _currentRotationCount = 0;
+        private bool _isInTransition = false;
 
-        private void Awake()
+        private void Start()
         {
             StartCoroutine(FishermanRotationCoroutine());
-            StartCoroutine(NextSectionCoroutine());
         }
 
         private IEnumerator FishermanRotationCoroutine()
         {
             while (true)
             {
-                if (_fishermanRotation == null)
+                if (_fishermanRotation == null || _isInTransition)
                     yield return null;
 
                 if (_isWaiting)
@@ -45,6 +47,12 @@ namespace FishingHim.FishAndFisherman.Timer
                         _waitTimer = 0f;
                         _fishermanRotation.SwitchDirection();
                         _hasSpawnedHook = false;
+                        _currentRotationCount++;
+
+                        if (_currentRotationCount >= _rotationsPerSection)
+                        {
+                            yield return StartCoroutine(SectionTransitionCoroutine());
+                        }
                     }
 
                     yield return null;
@@ -69,13 +77,17 @@ namespace FishingHim.FishAndFisherman.Timer
             }
         }
 
-        private IEnumerator NextSectionCoroutine()
+        private IEnumerator SectionTransitionCoroutine()
         {
-            while (true)
-            {
-                yield return new WaitForSeconds(_nextSectionTime);
-                _sectionsContoroller.GoToNextSection();
-            }
+            _isInTransition = true;
+
+            _sectionsContoroller.GoToNextSection();
+            IncreaseDifficulty();
+            _currentRotationCount = 0;
+
+            yield return new WaitForSeconds(_sectionTransitionDelay);
+
+            _isInTransition = false;
         }
 
         public void IncreaseDifficulty()

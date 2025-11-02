@@ -5,7 +5,6 @@ namespace FishingHim.FishAndFisherman.Hook
 {
     public class HookHolder : MonoBehaviour
     {
-        //[SerializeField] private float _rotationSpeed;
         private FishermanRotation _fishermanRotation;
 
         private void Awake()

@@ -19,9 +19,12 @@ namespace FishingHim.FishAndFisherman.Fish
 
         public void LoseHp()
         {
+            if (_health <= 0)
+                return;
+
             _hpImages[_health - 1].sprite = _emptyHpSprite;
             _health--;
-            _sectionsContoroller.ReturnToPreviousSection();
+            _sectionsContoroller.RestartSection();
 
             if (_health == 0)
                 Lose();
