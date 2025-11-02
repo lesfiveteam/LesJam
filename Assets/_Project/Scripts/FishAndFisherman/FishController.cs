@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -53,9 +54,11 @@ namespace FishingHim.FishAndFisherman.Fish
         private float _jumpStartDirection = 1f;
         private float _rollStartDirection = 1f;
         private float _originalMoveSpeed;
-
-        // Input значения
         private Vector2 _movementInput;
+
+        public bool IsRolling => _isRolling;
+        public float JumpDuration => _jumpDuration;
+
 
         private void Awake()
         {
@@ -66,23 +69,17 @@ namespace FishingHim.FishAndFisherman.Fish
 
         private void OnEnable()
         {
-            // Включаем Input Actions
             _movementAction.action.Enable();
             _jumpAction.action.Enable();
             _rollAction.action.Enable();
-
-            // Подписываемся на события
             _jumpAction.action.performed += OnJumpPerformed;
             _rollAction.action.performed += OnRollPerformed;
         }
 
         private void OnDisable()
         {
-            // Отписываемся от событий
             _jumpAction.action.performed -= OnJumpPerformed;
             _rollAction.action.performed -= OnRollPerformed;
-
-            // Выключаем Input Actions
             _movementAction.action.Disable();
             _jumpAction.action.Disable();
             _rollAction.action.Disable();
@@ -90,18 +87,14 @@ namespace FishingHim.FishAndFisherman.Fish
 
         private void Update()
         {
-            // Читаем текущие значения Input для движения
             _movementInput = _movementAction.action.ReadValue<Vector2>();
-
             HandleMovement();
-            HandleJump();  // Только анимация прыжка
-            HandleRoll();  // Только анимация переката
+            HandleJump(); 
+            HandleRoll(); 
         }
 
-        // Обработчики Input событий
         private void OnJumpPerformed(InputAction.CallbackContext context)
         {
-            // Обрабатываем прыжок сразу в обработчике события
             if (!_isJumping && !_isRolling)
             {
                 _isJumping = true;
@@ -114,7 +107,6 @@ namespace FishingHim.FishAndFisherman.Fish
 
         private void OnRollPerformed(InputAction.CallbackContext context)
         {
-            // Обрабатываем перекат сразу в обработчике события
             if (!_isRolling && !_isJumping)
             {
                 _isRolling = true;
@@ -159,7 +151,6 @@ namespace FishingHim.FishAndFisherman.Fish
         {
             float moveInput = _movementInput.x;
 
-            // Сохраняем последнее направление движения только если не в прыжке
             if (moveInput != 0f && !_isJumping)
             {
                 _lastMoveDirection = moveInput;
@@ -230,8 +221,56 @@ namespace FishingHim.FishAndFisherman.Fish
             }
         }
 
+        public void SectionJump(float jumpDistance)
+        {
+            StartCoroutine(SectionJumpCoroutine(jumpDistance));
+        }
 
-        // Остальные методы остаются без изменений
+        private IEnumerator SectionJumpCoroutine(float jumpDistance)
+        {
+            _movementAction.action.Disable();
+            _jumpAction.action.Disable();
+            _rollAction.action.Disable();
+
+            while (_isJumping || _isRolling)
+            {
+                yield return null;
+            }
+
+            _isJumping = true;
+            Vector3 startPos = _fish.position;
+            Vector3 targetPos = startPos + Vector3.forward * jumpDistance;
+            Quaternion startRotation = _fish.rotation;
+            float jumpTimer = 0f;
+            float currentRotation = 0f;
+
+            while (jumpTimer < _jumpDuration)
+            {
+                jumpTimer += Time.deltaTime;
+                float progress = jumpTimer / _jumpDuration;
+                float jumpHeight = _jumpCurve.Evaluate(progress) * _jumpHeight;
+                Vector3 newPosition = Vector3.Lerp(startPos, targetPos, progress);
+                newPosition.y = _startPosition.y + jumpHeight;
+                _fish.position = newPosition;
+                currentRotation += _jumpRotationSpeed * Time.deltaTime;
+                Quaternion jumpRotation = Quaternion.Euler(
+                    currentRotation,
+                    startRotation.eulerAngles.y,
+                    startRotation.eulerAngles.z
+                );
+                _fish.rotation = jumpRotation;
+
+                yield return null;
+            }
+
+            _fish.position = targetPos;
+            _fish.rotation = startRotation;
+            _isJumping = false;
+            _movementAction.action.Enable();
+            _jumpAction.action.Enable();
+            _rollAction.action.Enable();
+        }
+
         private void RotateFishTowardsMovement(float moveInput)
         {
             float targetRotationY = moveInput > 0 ? _rightRotationAngle : _leftRotationAngle;
