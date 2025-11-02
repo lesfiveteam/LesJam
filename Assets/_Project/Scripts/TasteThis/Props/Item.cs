@@ -2,14 +2,11 @@ using UnityEngine;
 
 namespace FishingHim.TasteThis
 {
-    public class Item : MonoBehaviour
+    public class Item : MonoBehaviour, ICatchable
     {
         private Rigidbody2D _rb;
 
         public float Weight => _rb.mass;
-
-        public delegate void ItemCaught(Item item);
-        public event ItemCaught OnItemCaught;
 
         private void Start()
         {
@@ -37,10 +34,7 @@ namespace FishingHim.TasteThis
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.TryGetComponent<Hook>(out var hook))
-            {
-                Destroy(gameObject);
-                OnItemCaught?.Invoke(this);
-            }
+                hook.Catch(this);
         }
     }
 }
