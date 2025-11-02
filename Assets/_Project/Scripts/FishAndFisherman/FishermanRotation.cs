@@ -7,6 +7,7 @@ namespace FishingHim.FishAndFisherman.Fisherman
         [Header("Rotation Settings")]
         [SerializeField] private float _leftRotationAngle = -50f;
         [SerializeField] private float _rightRotationAngle = 50f;
+        [SerializeField] private float _rotationSpeed = 90f; // градусов в секунду
 
         private float _targetRotation;
         private bool _isRotatingRight = true;
@@ -16,11 +17,10 @@ namespace FishingHim.FishAndFisherman.Fisherman
             _targetRotation = _rightRotationAngle;
         }
 
-        public void UpdateRotation(float rotationStep)
+        public void UpdateRotation(float deltaTime)
         {
             float currentRotation = transform.eulerAngles.y;
-            currentRotation = NormalizeAngle(currentRotation);
-            float newRotation = Mathf.LerpAngle(currentRotation, _targetRotation, rotationStep);
+            float newRotation = Mathf.MoveTowardsAngle(currentRotation, _targetRotation, _rotationSpeed * deltaTime);
             transform.rotation = Quaternion.Euler(0f, newRotation, 0f);
         }
 
@@ -32,16 +32,8 @@ namespace FishingHim.FishAndFisherman.Fisherman
 
         public bool HasReachedTarget()
         {
-            float currentRotation = NormalizeAngle(transform.eulerAngles.y);
-            return Mathf.Abs(currentRotation - _targetRotation) < 0.5f;
-        }
-
-        private float NormalizeAngle(float angle)
-        {
-            angle = angle % 360f;
-            if (angle > 180f)
-                angle -= 360f;
-            return angle;
+            float currentRotation = transform.eulerAngles.y;
+            return Mathf.Abs(Mathf.DeltaAngle(currentRotation, _targetRotation)) < 0.5f;
         }
     }
 }
