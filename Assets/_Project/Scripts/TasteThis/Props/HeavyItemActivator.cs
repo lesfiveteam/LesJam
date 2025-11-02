@@ -12,6 +12,7 @@ namespace FishingHim.TasteThis
         private float _mass;
         private Item _item;
         private AudioSource _audioSource;
+        private bool _isActive = false;
 
         private void Start()
         {
@@ -28,14 +29,16 @@ namespace FishingHim.TasteThis
             if (capacity < _mass)
             {
                 _renderer.color = _inactiveColor;
+                _isActive = false;
 
                 if (_item.IsRaised())
                     _item.Drop();
             }
-            else
+            else if (!_isActive)
             {
                 _renderer.color = _activeColor;
                 _audioSource.Play();
+                _isActive = true;
             }
         }
     }

@@ -1,3 +1,4 @@
+using FishingHim.Common;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,6 +12,9 @@ namespace FishingHim
         [SerializeField]
         private GameObject _pauseMenu;
 
+        [SerializeField, Header("True если при выходе из паузы в меню надо автоматически засчитывать поражение")]
+        private bool _autoLose = false;
+
         private void OnPause()
         {
             Time.timeScale = 1f - Time.timeScale;
@@ -23,7 +27,12 @@ namespace FishingHim
             {
                 Time.timeScale = 1f;
                 ExitFromPause?.Invoke();
-                FaderManager._instance.Load_MainScene();
+
+                if (_autoLose)
+                    ProgressManager.instance.Lose();
+                else
+                    FaderManager._instance.Load_MainScene();
+
                 Destroy(this);
             }
         }
