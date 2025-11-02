@@ -2,7 +2,6 @@ using FishingHim.Common;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace FishingHim.TasteThis
 {
@@ -10,11 +9,15 @@ namespace FishingHim.TasteThis
     {
         [SerializeField]
         private int _targetFishesNumber = 10;
+        [SerializeField]
+        GameObject _winPanel, _losePanel;
         private Animator _animator;
         private float _animDuration;
         private Collider2D _collider;
         private int _fishesNumber;
-        private float _capacity = 3f;
+        private float _capacity = 2f;
+        private AudioSource _audioSource;
+        private bool _isGameOver = false;
 
         public static Hook Instance { get; private set; }
 
@@ -22,6 +25,7 @@ namespace FishingHim.TasteThis
         {
             _animator = GetComponent<Animator>();
             _collider = GetComponent<Collider2D>();
+            _audioSource = GetComponent<AudioSource>();
             _animDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
             Instance = this;
         }
@@ -50,7 +54,8 @@ namespace FishingHim.TasteThis
 
         public void Catch<T>(T caughtItem) where T : MonoBehaviour, ICatchable
         {
-            bool _continueGame = true;
+            if (_isGameOver)
+                return;
 
             if (caughtItem is SmallFish)
             {
@@ -60,7 +65,6 @@ namespace FishingHim.TasteThis
                 {
                     ProgressManager.instance.Lose();
                     StartCoroutine(GameOver(false));
-                    _continueGame = false;
                 }
 
             }
@@ -72,16 +76,16 @@ namespace FishingHim.TasteThis
                 {
                     ProgressManager.instance.Win(2);
                     StartCoroutine(GameOver(true));
-                    _continueGame = false;
                 }
             }
 
             _collider.enabled = false;
             _animator.SetBool("IsMoving", true);
             caughtItem.Drag(_tip);
+            _audioSource.Play();
             Destroy(caughtItem.gameObject, _animDuration / 2f);
 
-            if (_continueGame)
+            if (!_isGameOver)
                 StartCoroutine(Reset());
         }
 
@@ -94,8 +98,16 @@ namespace FishingHim.TasteThis
 
         public IEnumerator GameOver(bool isWin)
         {
-            yield return new WaitForSeconds(1f);
-            FaderManager._instance.Load_MainScene();
+            _isGameOver = true;
+            _winPanel.SetActive(isWin);
+            _losePanel.SetActive(!isWin);
+
+            if (isWin)
+            {
+                yield return new WaitForSeconds(1.5f);
+                FaderManager._instance.Load_MainScene();
+            }
+
             Destroy(this);
         }
     }

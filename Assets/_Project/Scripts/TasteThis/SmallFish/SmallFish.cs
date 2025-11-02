@@ -42,17 +42,17 @@ namespace FishingHim.TasteThis
             set {  _type = value; }
         }
 
-        private bool _isWobbling = true;
-        private float _startWobblingSeconds = 2f;
-        private float _wobblingSpeed;
+       // private bool _isWobbling = true;
+        private float _startWobblingSeconds = 3f, _minWobblingSeconds = 0.5f, _maxWobblingSeconds = 2f;
+        private float _wobblingFactor = 1f;
+        private float _noWobblingPeriodMin = 2f, _noWobblingPeriodMax = 10f;
 
         private void Start()
         {
             _hook = Hook.Instance;
             _hook.FishCaught += Hook_OnFishCaught;
-            _wobblingSpeed = _slowSpeed / 2f;
             RotateFish(FishDirection.TowardsHook);
-            StartCoroutine(StartWobbling());
+            StartCoroutine(WobblingProceed());
         }
 
         private void RotateFish(FishDirection fishDirection)
@@ -69,20 +69,26 @@ namespace FishingHim.TasteThis
             _escapingTimer = 0f;
         }
 
-        private IEnumerator StartWobbling()
+        private IEnumerator StartWobbling(float time, float wobblingFactor)
         {
-            yield return new WaitForSeconds(_startWobblingSeconds);
-            _isWobbling = false;
+            _wobblingFactor = wobblingFactor;
+            yield return new WaitForSeconds(time);
+            _wobblingFactor = 1f;
+        }
+        
+        private IEnumerator WobblingProceed()
+        {
+            yield return StartWobbling(_startWobblingSeconds, 0.4f);
+
+            while (true)
+            {
+                yield return new WaitForSeconds(Random.Range(_noWobblingPeriodMin, _noWobblingPeriodMax));
+                yield return StartWobbling(Random.Range(_minWobblingSeconds, _maxWobblingSeconds), Random.Range(0.2f, 0.8f));
+            }
         }
 
         private void Update()
         {
-            if (_isWobbling)
-            {
-                transform.position += transform.right * _wobblingSpeed * Time.deltaTime;
-                return;
-            }
-
             if (_isEscaping)
             {
                 RotateFish(FishDirection.AwayFromHook);
@@ -100,16 +106,16 @@ namespace FishingHim.TasteThis
                 switch (_type)
                 {
                     case SmallFishType.Slow:
-                        transform.position += transform.right * _slowSpeed * Time.deltaTime;
+                        transform.position += transform.right * _slowSpeed * Time.deltaTime * _wobblingFactor;
                         break;
                     case SmallFishType.Medium:
                         _sinTime += Time.deltaTime;
                         Vector3 baseMovement = transform.right * _mediumSpeed * Time.deltaTime;
-                        Vector3 sinOffset = transform.up * Mathf.Sin(_sinTime * _sinFrequency) * _sinAmplitude * Time.deltaTime;
+                        Vector3 sinOffset = transform.up * Mathf.Sin(_sinTime * _sinFrequency) * _sinAmplitude * Time.deltaTime * _wobblingFactor;
                         transform.position += baseMovement + sinOffset;
                         break;
                     case SmallFishType.Fast:
-                        transform.position += transform.right * _fastSpeed * Time.deltaTime;
+                        transform.position += transform.right * _fastSpeed * Time.deltaTime * _wobblingFactor;
                         break;
                 }
             }

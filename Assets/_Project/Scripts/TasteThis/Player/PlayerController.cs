@@ -21,6 +21,7 @@ namespace FishingHim.TasteThis
         private SpriteRenderer _renderer;
         private Vector2 _newSpeed;
         private Vector3 _newAngles;
+        private AudioSource _audioSource;
 
         public event Action<float> OnLevelChange;
 
@@ -28,6 +29,7 @@ namespace FishingHim.TasteThis
         {
             _rb = GetComponent<Rigidbody2D>();
             _renderer = GetComponent<SpriteRenderer>();
+            _audioSource = GetComponent<AudioSource>();
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Props"), true);
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Props"), LayerMask.NameToLayer("Props"), true);
             Hook.Instance.ItemCaught += ItemCaught;
@@ -78,7 +80,10 @@ namespace FishingHim.TasteThis
             if (_item.IsRaised())
                 _item.Drop();
             else
+            {
                 _item.Drag(transform);
+                _audioSource.Play();
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -124,5 +129,7 @@ namespace FishingHim.TasteThis
         }
 
         private void SetSpeed() => _speed = _initialSpeed + _speedDelta * (_capacity);
+
+
     }
 }

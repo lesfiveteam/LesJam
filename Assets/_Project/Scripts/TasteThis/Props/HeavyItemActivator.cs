@@ -11,10 +11,12 @@ namespace FishingHim.TasteThis
         private SpriteRenderer _renderer;
         private float _mass;
         private Item _item;
+        private AudioSource _audioSource;
 
         private void Start()
         {
             _renderer = GetComponentInChildren<SpriteRenderer>();
+            _audioSource = GetComponent<AudioSource>();
             _renderer.color = _inactiveColor;
             _player.OnLevelChange += PlayerChangeLevel;
             _mass = GetComponent<Rigidbody2D>().mass;
@@ -31,8 +33,10 @@ namespace FishingHim.TasteThis
                     _item.Drop();
             }
             else
+            {
                 _renderer.color = _activeColor;
+                _audioSource.Play();
+            }
         }
-
     }
 }
