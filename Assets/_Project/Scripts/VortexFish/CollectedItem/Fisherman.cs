@@ -4,22 +4,25 @@ using UnityEngine;
 
 namespace FishingHim.VortexFish.CollectedItem
 {
-    public class Fisherman : MonoBehaviour
+    /** 
+     * Класс для появляемого в линии предмета - рыбака
+     */
+    public class Fisherman : AbstractCollectedItem
     {
-        private void OnCollisionEnter(Collision collision)
+        /** 
+         * Переопределяемый метод с событием, которое вызывается при столкновении с игроком
+         */
+        protected override void OnPlayerEnter()
         {
-            if (collision.transform.tag == "Player")
+            if (VortexFishManager.InTurboMode())
             {
-                if (VortexFishManager.IsPlayerInRage())
-                {
-                    // Сбивает рыбаков
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    Debug.Log("Реализуй проигрыш, когда будет готов GameManager от Аллана");
-                    ProgressManager.instance.Lose();
-                }
+                // Сбивает рыбаков
+                VortexFishManager.AddDeadFisherman();
+                Destroy(gameObject);
+            }
+            else
+            {
+                ProgressManager.instance.Lose();
             }
         }
     }

@@ -19,10 +19,6 @@ namespace FishingHim.VortexFish
         [Header("Физика")]
         public ForceMode forceMode = ForceMode.VelocityChange;
 
-        [Header("Ярость")]
-        [SerializeField]
-        private float rageTime = 3f;
-
         private Rigidbody rb;
         private Vector3 movement;
 
@@ -85,33 +81,6 @@ namespace FishingHim.VortexFish
                 // Ничего не нажато
                 rb.linearVelocity *= moveSmoothness;
             }
-        }
-
-        /**
-         * Войти в ярость
-         */
-        public void EnterInRage()
-        {
-            Debug.Log("Вошел в ярость - доделайте меня");
-            InRage = true;
-        }
-
-        /**
-         * Выход из ярости
-         */
-        private void ExitFromRage()
-        {
-            Debug.Log("Вышел в ярость - доделайте меня");
-            InRage = false;
-        }
-
-        /**
-         * Подождать и выйти из ярости
-         */
-        private IEnumerator WaitAndExitFromRage()
-        {
-            yield return new WaitForSeconds(rageTime);
-            ExitFromRage();
         }
     }
 }

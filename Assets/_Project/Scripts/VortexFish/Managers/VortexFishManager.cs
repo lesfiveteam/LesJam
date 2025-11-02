@@ -1,4 +1,6 @@
 using FishingHim.Common;
+using System;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,6 +13,7 @@ namespace FishingHim.VortexFish.Manager
         public VortexFishManager Instance { get { return _instance; } }
         public Fish Fish = null;
 
+        [Header("Баланс настройки")]
         private int boostCount = 0;
         [SerializeField]
         private int boostCountForRage = 3; // кол-во буста для входа в ярость
@@ -18,6 +21,11 @@ namespace FishingHim.VortexFish.Manager
         private int deadFishermanCount = 0;
         [SerializeField]
         private int deadFishermanCountForWin = 3; // кол-во сбитых рыбаков для победы
+
+        [Header("Турбо")]
+        [SerializeField]
+        private float turboTime = 3f;
+        private bool InTurbo = false;
 
         private void Start()
         {
@@ -43,36 +51,62 @@ namespace FishingHim.VortexFish.Manager
         /**
          * Прибавляет к количеству съеденного печенья +1
          */
-        public void AddBoost()
+        public static void AddBoost()
         {
-            boostCount++;
-            if (boostCount >= boostCountForRage)
+            _instance.boostCount++;
+            if (_instance.boostCount >= _instance.boostCountForRage)
             {
-                boostCount = 0;
-                Fish.EnterInRage();
+                _instance.boostCount = 0;
+                _instance.EnterInTurbo();
             }
         }
         /**
          * Прибавляет к количеству сбитых рыбаков
          */
-        public void AddDeadFisherman()
+        public static void AddDeadFisherman()
         {
-            deadFishermanCount++;
-            if (deadFishermanCount >= deadFishermanCountForWin)
+            _instance.deadFishermanCount++;
+            if (_instance.deadFishermanCount >= _instance.deadFishermanCountForWin)
             {
                 // Победа
-                Debug.Log("Реализуй победу, когда будет готов GameManager от Аллана");
-                //Win принимает номер мини-игры, с которым она ассоциируется на главном экране
-                //Если вдруг VortexFish не будет первой (счет идет с нуля) по счету игрой, значение надо поменять
+                // Win принимает номер мини-игры, с которым она ассоциируется на главном экране
+                // @todo Если вдруг VortexFish не будет первой (счет идет с нуля) по счету игрой, значение надо поменять
                 ProgressManager.instance.Win(0); 
             }
         }
         /**
          * Возвращает истину, если игрок находится в состоянии ярости
          */
-        public static bool IsPlayerInRage()
+        public static bool InTurboMode()
         {
-            return _instance.Fish.InRage;
+            return _instance.InTurbo;
+        }
+
+
+
+        /**
+         * Подождать и выйти из турбо
+         */
+        private IEnumerator WaitAndExitFromTurbo()
+        {
+            yield return new WaitForSeconds(turboTime);
+            ExitFromTurbo();
+        }
+
+        /** 
+         * Выйти из турбо
+         */
+        private void ExitFromTurbo()
+        {
+            InTurbo = true;
+            StartCoroutine(WaitAndExitFromTurbo());
+        }
+        /** 
+         * Войти в турбо
+         */
+        private void EnterInTurbo()
+        {
+
         }
     }
 }
