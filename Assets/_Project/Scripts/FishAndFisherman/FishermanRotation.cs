@@ -1,4 +1,5 @@
 using UnityEngine;
+using FishingHim.Common;
 
 namespace FishingHim.FishAndFisherman.Fisherman
 {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace FishingHim.FishAndFisherman
+namespace FishingHim.Common
 {
     public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {

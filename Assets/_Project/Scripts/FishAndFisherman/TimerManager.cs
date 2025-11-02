@@ -3,6 +3,7 @@ using System.Collections;
 using FishingHim.FishAndFisherman.Fisherman;
 using FishingHim.FishAndFisherman.Sections;
 using FishingHim.FishAndFisherman.Hook;
+using FishingHim.Common;
 
 namespace FishingHim.FishAndFisherman.Timer
 {

@@ -9,7 +9,9 @@ namespace FishingHim.VortexFish.CollectedItem
          */
         protected override void OnPlayerEnter()
         {
-            VortexFishManager.AddBoost();
+            if(!VortexFishManager.InTurboMode())                
+                VortexFishManager.AddBoost();
+            
             Destroy(gameObject);
         }
     }

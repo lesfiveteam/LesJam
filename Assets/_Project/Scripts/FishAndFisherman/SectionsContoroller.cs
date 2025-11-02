@@ -1,6 +1,7 @@
 using FishingHim.FishAndFisherman.Fish;
 using System.Collections;
 using UnityEngine;
+using FishingHim.Common;
 
 namespace FishingHim.FishAndFisherman.Sections
 {
