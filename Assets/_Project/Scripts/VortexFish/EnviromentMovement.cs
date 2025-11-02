@@ -1,3 +1,4 @@
+using FishingHim.VortexFish.Manager;
 using System.Collections;
 using UnityEngine;
 
@@ -6,9 +7,7 @@ namespace FishingHim.VortexFish
     // Класс для движение окружения
     public class EnviromentMovement : MonoBehaviour
     {
-        public float speed = 5f;
-        public float lifeTime = 15f;
-
+        private float lifeTime = 8f;
 
         private void Start()
         {
@@ -18,6 +17,9 @@ namespace FishingHim.VortexFish
 
         void FixedUpdate()
         {
+            float speed = VortexFishManager.InTurboMode()
+                ? VortexFishManager.Instance.TurboSpeed 
+                : VortexFishManager.Instance.Speed;
             // Обновляем позицию напрямую
             transform.position += Vector3.back * speed * Time.deltaTime;
         }

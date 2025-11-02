@@ -1,4 +1,5 @@
 using FishingHim.VortexFish.CollectedItem;
+using FishingHim.VortexFish.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,8 +16,16 @@ namespace FishingHim.VortexFish.Generator
         private List<ItemGenerator> itemGenerators = new List<ItemGenerator>();
         [SerializeField]
         private List<Transform> lineGeneratorTransform = new List<Transform>();
+
+
+        private int lastRowPatternNumber = -1;
         [SerializeField]
-        private float time = 2f; // Каждые столько секунд будет создавать объект
+        // Сколько раз нужно воспроизвести паттерн
+        private int replayInTurboCount = 5;
+        // Сколько раз уже воспроизвели паттерн
+        private int currentReplayNumber = 0;
+        // Прошлый индекс паттерна
+        private int lastPatternIndex = 0;
 
         private void Start()
         {
@@ -32,6 +41,9 @@ namespace FishingHim.VortexFish.Generator
         */
         private IEnumerator WaitAndGenerate()
         {
+            float time = VortexFishManager.InTurboMode()
+                ? VortexFishManager.Instance.GeneratorTurboTime
+                : VortexFishManager.Instance.GeneratorTime;
             yield return new WaitForSeconds(time);
             Generate();
             StartCoroutine(WaitAndGenerate());
@@ -42,13 +54,25 @@ namespace FishingHim.VortexFish.Generator
          */
         private void Generate()
         {
-            int randomPattern = Random.Range(0, rowPatterns.Count);
+            // Случайный шаблон для строки
+            int patternIndex = 0;
+            if (VortexFishManager.InTurboMode() && currentReplayNumber < replayInTurboCount)
+            {
+                currentReplayNumber++;
+                patternIndex = lastPatternIndex;
+            }
+            else
+            {
+                patternIndex = Random.Range(0, rowPatterns.Count);
+                lastPatternIndex = patternIndex;
+                currentReplayNumber = 0;
+            }
             // Генерим линии
-            Transform lineItem1 = GeneratorItem(rowPatterns[randomPattern].Line1, lineGeneratorTransform[0]);
-            Transform lineItem2 = GeneratorItem(rowPatterns[randomPattern].Line2, lineGeneratorTransform[1]);
-            Transform lineItem3 = GeneratorItem(rowPatterns[randomPattern].Line3, lineGeneratorTransform[2]);
-            Transform lineItem4 = GeneratorItem(rowPatterns[randomPattern].Line4, lineGeneratorTransform[3]);
-            Transform lineItem5 = GeneratorItem(rowPatterns[randomPattern].Line5, lineGeneratorTransform[4]);
+            Transform lineItem1 = GeneratorItem(rowPatterns[patternIndex].Line1, lineGeneratorTransform[0]);
+            Transform lineItem2 = GeneratorItem(rowPatterns[patternIndex].Line2, lineGeneratorTransform[1]);
+            Transform lineItem3 = GeneratorItem(rowPatterns[patternIndex].Line3, lineGeneratorTransform[2]);
+            Transform lineItem4 = GeneratorItem(rowPatterns[patternIndex].Line4, lineGeneratorTransform[3]);
+            Transform lineItem5 = GeneratorItem(rowPatterns[patternIndex].Line5, lineGeneratorTransform[4]);
             // Добавляем скрипт на движение
             AddEnviromentMovement(lineItem1);
             AddEnviromentMovement(lineItem2);

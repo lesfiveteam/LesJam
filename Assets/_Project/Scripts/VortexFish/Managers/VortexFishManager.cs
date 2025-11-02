@@ -10,7 +10,7 @@ namespace FishingHim.VortexFish.Manager
     {
         // Singleton
         private static VortexFishManager _instance;
-        public VortexFishManager Instance { get { return _instance; } }
+        public static VortexFishManager Instance { get { return _instance; } }
         public Fish Fish = null;
 
         [Header("Баланс настройки")]
@@ -26,8 +26,12 @@ namespace FishingHim.VortexFish.Manager
         [SerializeField]
         private float turboTime = 3f;
         private bool InTurbo = false;
+        public float Speed = 2f;
+        public float TurboSpeed = 4f;
+        public float GeneratorTime = 2f; // Каждые столько секунд будет создавать объект на линии
+        public float GeneratorTurboTime = 1f; // Каждые столько секунд будет создавать объект на линии в турбо
 
-        private void Start()
+        private void Awake()
         {
             if (_instance == null)
             {
@@ -82,8 +86,6 @@ namespace FishingHim.VortexFish.Manager
             return _instance.InTurbo;
         }
 
-
-
         /**
          * Подождать и выйти из турбо
          */
@@ -98,15 +100,17 @@ namespace FishingHim.VortexFish.Manager
          */
         private void ExitFromTurbo()
         {
-            InTurbo = true;
-            StartCoroutine(WaitAndExitFromTurbo());
+            Debug.Log("Вышли из турбо");
+            InTurbo = false;
         }
         /** 
          * Войти в турбо
          */
         private void EnterInTurbo()
         {
-
+            Debug.Log("Вошли в турбо");
+            InTurbo = true;
+            StartCoroutine(WaitAndExitFromTurbo());
         }
     }
 }
