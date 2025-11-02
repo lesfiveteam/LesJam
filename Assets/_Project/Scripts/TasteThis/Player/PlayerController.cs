@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,17 +9,20 @@ namespace FishingHim.TasteThis
     public class PlayerController : MonoBehaviour
     {
         [SerializeField]
-        private float _speed = 1f;
-        //[SerializeField]
-        //private float _rotateSpeed = 1f;
+        private float _initialSpeed = 0.9f, _speedDelta = 0.07f;
         [SerializeField]
-        private float _rotateMaxAngle = 25f;
+        private int _maxCapacity = 9;
+        [SerializeField]
+        private float _inertiaMovementFactor = 1f, _inertiaRotationFactor = 1f;
+        private float _speed;
         private Rigidbody2D _rb;
         private Item _item;
         private float _capacity = 1f;
         private SpriteRenderer _renderer;
-       // private float _rotationDelay = 0.25f;
-        //private IEnumerator rotateCoroutine;
+        private Vector2 _newSpeed;
+        private Vector3 _newAngles;
+
+        public event Action<float> OnLevelChange;
 
         private void Start()
         {
@@ -26,41 +30,45 @@ namespace FishingHim.TasteThis
             _renderer = GetComponent<SpriteRenderer>();
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Props"), true);
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Props"), LayerMask.NameToLayer("Props"), true);
+            Hook.Instance.ItemCaught += ItemCaught;
+            Hook.Instance.FishCaught += FishCaught;
+            SetSpeed();
         }
 
         private void OnMove(InputValue value)
         {
-            var movement = value.Get<Vector2>().normalized * _speed;
+            _newSpeed = value.Get<Vector2>().normalized * _speed;
 
-            if (movement.x != 0f && _rb.linearVelocity.x * movement.x <= 0f)
-                _renderer.flipX = movement.x > 0f;
+            if (_newSpeed.x != 0f)
+            {
+                bool newFlip = _newSpeed.x > 0f;
 
-            //var angles = transform.eulerAngles;
-            
-            //if (movement.y == 0f)
-            //    angles.z = 0f;
-            //else if (movement.y > 0f)
-            //    angles.z = _rotateMaxAngle * (movement.x > 0f ? 1 : -1);
-            //else
-            //    angles.z = _rotateMaxAngle * (movement.x < 0f ? 1 : -1);
+                if (newFlip != _renderer.flipX)
+                {
+                    var flipedRotation = transform.rotation;
+                    flipedRotation.z = -flipedRotation.z;
+                    transform.rotation = flipedRotation;
+                }
 
-            //transform.eulerAngles = angles;
+                _renderer.flipX = newFlip;
 
+            }
 
-            //StartCoroutine(RotateFish(_rotateMaxAngle));
-
-            _rb.linearVelocity = movement;
+            _newAngles = transform.eulerAngles;
+            _newAngles.z = Vector2.SignedAngle(_renderer.flipX ? Vector2.right : Vector2.left, _newSpeed);
         }
 
-        //private IEnumerator RotateFish(float angle)
-        //{
+        private void Update()
+        {
+            _rb.linearVelocity = Vector2.Lerp(_rb.linearVelocity, _newSpeed, _inertiaMovementFactor * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(_newAngles), _inertiaRotationFactor * Time.deltaTime);
+        }
 
-        //    while (transform.eulerAngles.z != angle)
-        //    {
-        //        transform.Rotate(transform.forward, _rotateSpeed * _rotationDelay);
-        //        yield return new WaitForSeconds(_rotationDelay);
-        //    }
-        //}
+        private IEnumerator ChangeSpeedX(float newSpeed)
+        {
+            yield return new WaitForSeconds(0.5f);
+            _rb.linearVelocity = new(newSpeed, _rb.linearVelocity.y);
+        }
 
         private void OnInteract()
         {
@@ -68,15 +76,9 @@ namespace FishingHim.TasteThis
                 return;
 
             if (_item.IsRaised())
-            {
                 _item.Drop();
-                _item.OnItemCaught -= OnItemCaught;
-            }
             else
-            {
                 _item.Drag(transform);
-                _item.OnItemCaught += OnItemCaught;
-            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -97,9 +99,30 @@ namespace FishingHim.TasteThis
             }
         }
 
-        private void OnItemCaught(Item _)
+        private void ItemCaught(Item _)
         {
-            _capacity++;
+            if (_capacity < _maxCapacity)
+            {
+                _capacity++;
+                SetLevel();
+            }
         }
+
+        private void FishCaught(object _, EventArgs __)
+        {
+            if (_capacity > 1)
+            {
+                //_capacity--;
+                //SetLevel();
+            }
+        }
+
+        private void SetLevel()
+        {
+            SetSpeed();
+            OnLevelChange?.Invoke(_capacity);
+        }
+
+        private void SetSpeed() => _speed = _initialSpeed + _speedDelta * (_capacity);
     }
 }

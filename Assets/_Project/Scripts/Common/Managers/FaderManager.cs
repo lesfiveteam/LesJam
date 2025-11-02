@@ -11,7 +11,7 @@ public class FaderManager : MonoBehaviour
 
     private bool _isLoading;
 
-    private static FaderManager _instance;
+    public static FaderManager _instance;
 
     private void Awake()
     {
