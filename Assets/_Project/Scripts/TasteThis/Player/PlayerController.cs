@@ -26,6 +26,16 @@ namespace FishingHim.TasteThis
         private Vector3 _newAngles;
         private AudioSource _audioSource;
 
+        [SerializeField]
+        private GameObject _3dModel;
+        [SerializeField]
+        private Transform _itemHandler;
+        [SerializeField]
+        SpriteRenderer _auraRenderer;
+        private Animator _animator;
+        private float _auraMaxAlpha = 0.5f;
+        private float _auraStep;
+
         public event Action<float> OnLevelChange;
 
         private void Start()
@@ -37,12 +47,16 @@ namespace FishingHim.TasteThis
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Props"), LayerMask.NameToLayer("Props"), true);
             Hook.Instance.ItemCaught += ItemCaught;
             Hook.Instance.FishCaught += FishCaught;
+            _animator = _3dModel.GetComponent<Animator>();
+            _auraStep = _auraMaxAlpha / _maxCapacity;
             SetSpeed();
         }
 
         private void OnMove(InputValue value)
         {
             _newSpeed = value.Get<Vector2>().normalized * _speed;
+            _animator.SetBool("IsSwimming", !Mathf.Approximately(_newSpeed.magnitude, 0f));
+                
 
             if (_newSpeed.x != 0f)
             {
@@ -56,6 +70,10 @@ namespace FishingHim.TasteThis
                 }
 
                 _renderer.flipX = newFlip;
+
+                var modelRotation = _3dModel.transform.localEulerAngles;
+                modelRotation.y = _renderer.flipX ? 90f : -90f;
+                _3dModel.transform.localEulerAngles = modelRotation;
 
             }
 
@@ -75,7 +93,7 @@ namespace FishingHim.TasteThis
             _rb.linearVelocity = new(newSpeed, _rb.linearVelocity.y);
         }
 
-        private void OnInteract()
+        private void OnJump()
         {
 
             if (_items.Count == 0 && _takenItem == null)
@@ -84,7 +102,7 @@ namespace FishingHim.TasteThis
             if (_takenItem == null)
             {
                 _takenItem = _items.Last();
-                _takenItem.Drag(transform);
+                _takenItem.Drag(_itemHandler);
                 _audioSource.Play();
             }
             else
@@ -130,6 +148,9 @@ namespace FishingHim.TasteThis
         private void SetLevel()
         {
             SetSpeed();
+            Color newColor = _auraRenderer.color;
+            newColor.a = _capacity * _auraStep;
+            _auraRenderer.color = newColor;
             OnLevelChange?.Invoke(_capacity);
         }
 
