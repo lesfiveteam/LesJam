@@ -6,7 +6,7 @@ using FishingHim.FishAndFisherman.Hook;
 
 namespace FishingHim.FishAndFisherman.Timer
 {
-    public class TimerManager : MonoBehaviour
+    public class TimerManager : Singleton<TimerManager>
     {
         [Header("Timer Settings")]
         [SerializeField] private int _rotationsPerSection = 5;
@@ -15,8 +15,6 @@ namespace FishingHim.FishAndFisherman.Timer
         [SerializeField] private float _rotationDelta = 5f;
         [SerializeField] private float _rotationSpeedIncrease = 0.5f;
         [SerializeField] private float _rotationDeltaDecrease = 0.5f;
-        [SerializeField] private FishermanRotation _fishermanRotation;
-        [SerializeField] private SectionsContoroller _sectionsContoroller;
         [SerializeField] private HooksSpawner _hooksSpawner;
 
         private float _waitTimer = 0f;
@@ -34,7 +32,7 @@ namespace FishingHim.FishAndFisherman.Timer
         {
             while (true)
             {
-                if (_fishermanRotation == null || _isInTransition)
+                if (_isInTransition)
                     yield return null;
 
                 if (_isWaiting)
@@ -45,7 +43,7 @@ namespace FishingHim.FishAndFisherman.Timer
                     {
                         _isWaiting = false;
                         _waitTimer = 0f;
-                        _fishermanRotation.SwitchDirection();
+                        FishermanRotation.Instance.SwitchDirection();
                         _hasSpawnedHook = false;
                         _currentRotationCount++;
 
@@ -65,9 +63,9 @@ namespace FishingHim.FishAndFisherman.Timer
                         _hasSpawnedHook = true;
                     }
 
-                    _fishermanRotation.UpdateRotation(_rotationSpeed * Time.deltaTime);
+                    FishermanRotation.Instance.UpdateRotation(_rotationSpeed * Time.deltaTime);
 
-                    if (_fishermanRotation.HasReachedTarget())
+                    if (FishermanRotation.Instance.HasReachedTarget())
                     {
                         _isWaiting = true;
                     }
@@ -80,7 +78,7 @@ namespace FishingHim.FishAndFisherman.Timer
         private IEnumerator SectionTransitionCoroutine()
         {
             _isInTransition = true;
-            _sectionsContoroller.GoToNextSection();
+            SectionsContoroller.Instance.GoToNextSection();
             IncreaseDifficulty();
             _currentRotationCount = 0;
             yield return new WaitForSeconds(_sectionTransitionDelay);

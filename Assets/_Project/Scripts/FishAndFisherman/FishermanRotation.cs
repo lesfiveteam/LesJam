@@ -2,18 +2,19 @@ using UnityEngine;
 
 namespace FishingHim.FishAndFisherman.Fisherman
 {
-    public class FishermanRotation : MonoBehaviour
+    public class FishermanRotation : Singleton<FishermanRotation>
     {
         [Header("Rotation Settings")]
         [SerializeField] private float _leftRotationAngle = -50f;
         [SerializeField] private float _rightRotationAngle = 50f;
-        [SerializeField] private float _rotationSpeed = 90f; // градусов в секунду
+        [SerializeField] private float _rotationSpeed = 90f;
 
         private float _targetRotation;
         private bool _isRotatingRight = true;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _targetRotation = _rightRotationAngle;
         }
 

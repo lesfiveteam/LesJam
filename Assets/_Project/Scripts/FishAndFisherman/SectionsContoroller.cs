@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FishingHim.FishAndFisherman.Sections
 {
-    public class SectionsContoroller : MonoBehaviour
+    public class SectionsContoroller : Singleton<SectionsContoroller>
     {
         [SerializeField] private int _sectionsCount;
         [SerializeField] private float _nextSectionDistance;

@@ -10,7 +10,6 @@ namespace FishingHim.FishAndFisherman.Hook
         [SerializeField] private Transform _spawnsHolder;
         [SerializeField] private Transform[] _spawnPositions;
         [SerializeField] private Vector3 _spawnDistanceDelta;
-        [SerializeField] private SectionsContoroller _sectionsController;
 
         private bool _isEven;
         private Vector3 _initialSpawnPosition;
@@ -32,7 +31,7 @@ namespace FishingHim.FishAndFisherman.Hook
             _isEven = !_isEven;
             HookHolder hookHolderToSpawn;
             int randomIndex = Random.Range(0, _spawnPositions.Length);
-            Vector3 spawnPos = _initialSpawnPosition + (_spawnDistanceDelta * _sectionsController.SectionIndex);
+            Vector3 spawnPos = _initialSpawnPosition + (_spawnDistanceDelta * SectionsContoroller.Instance.SectionIndex);
             _spawnsHolder.position = spawnPos;
 
             if (_isEven)
