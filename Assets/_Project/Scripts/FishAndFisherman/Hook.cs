@@ -9,7 +9,7 @@ namespace FishingHim.FishAndFisherman.Hook
         {
             if(other.TryGetComponent<FishHealth>(out FishHealth fishHealth))
             {
-                fishHealth.LoseHp();
+                fishHealth.GetHit(transform);
             }
         }
     }

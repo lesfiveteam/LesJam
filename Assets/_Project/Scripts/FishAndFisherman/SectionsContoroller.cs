@@ -48,11 +48,6 @@ namespace FishingHim.FishAndFisherman.Sections
             _mainCamera.position = targetPos;
         }
 
-        public void RestartSection()
-        {
-            //Restart timer somehow
-        }
-
         private void Victory()
         {
             Debug.Log("Victory");

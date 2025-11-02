@@ -33,7 +33,6 @@ namespace FishingHim.FishAndFisherman.Hook
             HookHolder hookHolderToSpawn;
 
             int randomIndex = Random.Range(0, _spawnPositions.Length);
-            Debug.Log(_initialSpawnPosition + " " + _sectionsController.SectionIndex);
             Vector3 spawnPos = _initialSpawnPosition + (_spawnDistanceDelta * _sectionsController.SectionIndex);
             _spawnsHolder.position = spawnPos;
 

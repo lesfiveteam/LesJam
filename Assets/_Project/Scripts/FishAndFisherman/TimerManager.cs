@@ -80,14 +80,16 @@ namespace FishingHim.FishAndFisherman.Timer
         private IEnumerator SectionTransitionCoroutine()
         {
             _isInTransition = true;
-
             _sectionsContoroller.GoToNextSection();
             IncreaseDifficulty();
             _currentRotationCount = 0;
-
             yield return new WaitForSeconds(_sectionTransitionDelay);
-
             _isInTransition = false;
+        }
+
+        public void RestartSection()
+        {
+            _currentRotationCount = 0;
         }
 
         public void IncreaseDifficulty()

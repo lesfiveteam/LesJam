@@ -55,6 +55,8 @@ namespace FishingHim.FishAndFisherman.Fish
         private float _rollStartDirection = 1f;
         private float _originalMoveSpeed;
         private Vector2 _movementInput;
+
+        public bool IsRolling => _isRolling;
         public float JumpDuration => _jumpDuration;
 
 
