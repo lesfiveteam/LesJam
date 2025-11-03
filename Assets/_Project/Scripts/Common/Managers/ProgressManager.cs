@@ -10,6 +10,7 @@ namespace FishingHim.Common
         public UnityEvent eventToPlayOnWin;   //сюда можно (необязательно) добавить функции загрузки уровня, визуальные эффекты и прочее,
                                               //что хочется вызывать по успешному завершении мини-игры.
         public UnityEvent eventToPlayOnLose;  //аналогично для проигрыша
+        public UnityEvent eventToEndGame;  //аналогично для проигрыша
 
         private const int NUMBER_OF_GAMES = 3;
         private const int NUMBERS_OF_FISHES = 5;
@@ -19,6 +20,8 @@ namespace FishingHim.Common
 
         public bool[] CompletedGamesArray { get; private set; }
 
+        public bool IsWin { get; private set; }
+
         public int GetNumberOfFishes() { return NUMBERS_OF_FISHES; }
         public int GetNumberOfAliveFishes() { return NUMBERS_OF_FISHES - numOfDeaths; }
 
@@ -27,13 +30,13 @@ namespace FishingHim.Common
 
         private void Awake()
         {
-            CompletedGamesArray = new bool[NUMBER_OF_GAMES];
-
             if (instance == null)
             {
                 instance = this;
 
-                DeletePlayerData();
+                NewGame();
+
+                LoadPlayerData();
             }
             else if (instance != this)
             {
@@ -43,6 +46,13 @@ namespace FishingHim.Common
             DontDestroyOnLoad(instance);
         }
 
+        private void NewGame()
+        {
+            CompletedGamesArray = new bool[NUMBER_OF_GAMES];
+            numOfCompletedGames = 0;
+            numOfDeaths = 0;
+        }
+
         //completedLevelNumber начинается с 0
         public void Win(int completedLevelNumber)
         {
@@ -50,20 +60,39 @@ namespace FishingHim.Common
                 return;
 
             numOfCompletedGames++;
-            CompletedGamesArray[completedLevelNumber] = true;
 
-            SavePlayerData();
+            if (numOfCompletedGames >= NUMBER_OF_GAMES)
+            {
+                IsWin = true;
 
-            eventToPlayOnWin?.Invoke();
+                eventToEndGame?.Invoke();
+            }
+            else
+            {
+                CompletedGamesArray[completedLevelNumber] = true;
+
+                SavePlayerData();
+
+                eventToPlayOnWin?.Invoke();
+            }
         }
 
         public void Lose()
         {
             numOfDeaths++;
 
-            SavePlayerData();
+            if (numOfDeaths >= NUMBERS_OF_FISHES)
+            {
+                IsWin = false;
 
-            eventToPlayOnLose?.Invoke();
+                eventToEndGame?.Invoke();
+            }
+            else
+            {
+                SavePlayerData();
+
+                eventToPlayOnLose?.Invoke();
+            }
         }
 
         private void SavePlayerData()
@@ -86,17 +115,23 @@ namespace FishingHim.Common
             }
         }
 
-        //private void LoadPlayerData()
-        //{
-        //    numOfCompletedGames = PlayerPrefs.GetInt("numOfSuccessfulGames");
-        //    numOfDeaths = PlayerPrefs.GetInt("numOfDeaths");
+        private void LoadPlayerData()
+        {
+            numOfCompletedGames = PlayerPrefs.GetInt("numOfSuccessfulGames");
+            numOfDeaths = PlayerPrefs.GetInt("numOfDeaths");
 
-        //    for (int i = 0; i < CompletedGamesArray.Length; i++)
-        //    {
-        //        string playerPrefKey = $"level{i}Complete";
-        //        CompletedGamesArray[i] = Convert.ToBoolean(PlayerPrefs.GetInt(playerPrefKey));
-        //    }
-        //}
+            for (int i = 0; i < CompletedGamesArray.Length; i++)
+            {
+                string playerPrefKey = $"level{i}Complete";
+                CompletedGamesArray[i] = Convert.ToBoolean(PlayerPrefs.GetInt(playerPrefKey));
+            }
+        }
+
+        public void RestartGame()
+        {
+            DeletePlayerData();
+            NewGame();
+        }
 
         private void DeletePlayerData()
         {

@@ -19,16 +19,16 @@ public class MainMenuHook : MonoBehaviour
         switch (levelToLoad)
         { 
             case LevelToLoad.MainScene:
-                hookButton.onClick.AddListener(() => { SceneLoader._instance.Load_MainScene(); });
+                hookButton.onClick.AddListener(() => { SceneLoader.Instance.Load_MainScene(); });
                 break;
             case LevelToLoad.MiniGame1:
-                hookButton.onClick.AddListener(() => { SceneLoader._instance.Load_MiniGame1(); });
+                hookButton.onClick.AddListener(() => { SceneLoader.Instance.Load_MiniGame1(); });
                 break;
             case LevelToLoad.MiniGame2:
-                hookButton.onClick.AddListener(() => { SceneLoader._instance.Load_MiniGame2(); });
+                hookButton.onClick.AddListener(() => { SceneLoader.Instance.Load_MiniGame2(); });
                 break;
             case LevelToLoad.MiniGame3:
-                hookButton.onClick.AddListener(() => { SceneLoader._instance.Load_MiniGame3(); });
+                hookButton.onClick.AddListener(() => { SceneLoader.Instance.Load_MiniGame3(); });
                 break;
         }
     }

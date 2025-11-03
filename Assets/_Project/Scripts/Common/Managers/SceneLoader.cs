@@ -8,20 +8,22 @@ public class SceneLoader : MonoBehaviour
     private const string Scene_MiniGame1 = "VortexFishScene";
     private const string Scene_MiniGame2 = "FishAndFishermanScene";
     private const string Scene_MiniGame3 = "TasteThis";
+    private const string Scene_EndGame = "EndGameScene";
+
 
     private bool _isLoading;
 
-    public static SceneLoader _instance;
+    public static SceneLoader Instance;
 
     private void Awake()
     {
-        if (_instance != null)
+        if (Instance != null)
         {
             Destroy(gameObject);
             return;
         }
 
-        _instance = this;
+        Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -44,6 +46,11 @@ public class SceneLoader : MonoBehaviour
     public void Load_MiniGame3()
     {
         LoadScene(Scene_MiniGame3);
+    }
+
+    public void Load_EndGame()
+    {
+        LoadScene(Scene_EndGame);
     }
 
     private void LoadScene(string sceneName)
