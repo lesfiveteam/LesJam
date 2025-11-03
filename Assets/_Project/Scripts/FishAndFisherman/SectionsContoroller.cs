@@ -7,14 +7,22 @@ namespace FishingHim.FishAndFisherman.Sections
 {
     public class SectionsContoroller : Singleton<SectionsContoroller>
     {
+        [SerializeField] private SoundType[] _musics;
         [SerializeField] private int _sectionsCount;
+        [SerializeField] private float _victoryDelay;
         [SerializeField] private float _nextSectionDistance;
         [SerializeField] private Transform _mainCamera;
         [SerializeField] private FishController _fishController;
+        [SerializeField] private GameObject _fishermanHitEffect;
 
         private int _sectionIndex;
 
         public int SectionIndex => _sectionIndex;
+
+        private void Start()
+        {
+            //SoundsManager.Instance.PlaySound(_musics[_sectionIndex]);
+        }
 
         public void GoToNextSection()
         {
@@ -22,10 +30,11 @@ namespace FishingHim.FishAndFisherman.Sections
 
             if (_sectionIndex == _sectionsCount)
             {
-                Victory();
+                StartCoroutine(VictoryRoutine());
             }
             else
             {
+                //SoundsManager.Instance.PlaySound(_musics[_sectionIndex]);
                 _fishController.SectionJump(_nextSectionDistance);
                 StartCoroutine(MoveCameraSmoothly(_nextSectionDistance));
             }
@@ -49,9 +58,12 @@ namespace FishingHim.FishAndFisherman.Sections
             _mainCamera.position = targetPos;
         }
 
-        private void Victory()
+        private IEnumerator VictoryRoutine()
         {
-            Debug.Log("Victory");
+            _fishController.SectionJump(_nextSectionDistance);
+            yield return new WaitForSeconds(_victoryDelay);
+            _fishermanHitEffect.SetActive(true);
+            ProgressManager.instance.Win(1);
         }
     }
 }

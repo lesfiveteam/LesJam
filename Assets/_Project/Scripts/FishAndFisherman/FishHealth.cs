@@ -1,3 +1,4 @@
+using FishingHim.Common;
 using FishingHim.FishAndFisherman.Timer;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +9,6 @@ namespace FishingHim.FishAndFisherman.Fish
     public class FishHealth : MonoBehaviour
     {
         [SerializeField] private Image[] _hpImages;
-        [SerializeField] private Sprite _emptyHpSprite;
         [SerializeField] private TimerManager _timerManager;
         [SerializeField] private FishController _fishController;
         [SerializeField] private float _rollingDangerDistance;
@@ -33,7 +33,7 @@ namespace FishingHim.FishAndFisherman.Fish
 
         private void LoseHp()
         {
-            _hpImages[_health - 1].sprite = _emptyHpSprite;
+            _hpImages[_health - 1].gameObject.SetActive(false);
             _health--;
             _timerManager.RestartSection();
 
@@ -43,7 +43,7 @@ namespace FishingHim.FishAndFisherman.Fish
 
         private void Lose()
         {
-            Debug.Log("Lose");
+            ProgressManager.instance.Lose();
         }
     }
 }
