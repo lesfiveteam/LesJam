@@ -21,7 +21,6 @@ namespace FishingHim.VortexFish.Generator
         private List<Transform> lineGeneratorTransform = new List<Transform>();
 
 
-        private int lastRowPatternNumber = -1;
         [SerializeField]
         // Сколько раз нужно воспроизвести паттерн
         private int replayInTurboCount = 5;
