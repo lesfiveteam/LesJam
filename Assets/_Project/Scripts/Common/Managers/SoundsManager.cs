@@ -25,6 +25,7 @@ namespace FishingHim.Common
         MainMusic,
         MainClick,
         MainLoadMiniGame,
+        MainSelectMiniGame,
         FishAndFishermanHook1,
         FishAndFishermanHook2,
         FishAndFishermanRoll,

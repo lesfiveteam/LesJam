@@ -1,5 +1,6 @@
-using UnityEngine;
+using FishingHim.Common;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Animator), typeof(Button))]
@@ -19,6 +20,7 @@ public class Fisherman : MonoBehaviour
         _animator = GetComponent<Animator>();
         _button = GetComponent<Button>();
 
+        _button.onClick.AddListener(PlaySound);
         _button.onClick.AddListener(CatchFish);
     }
 
@@ -36,6 +38,11 @@ public class Fisherman : MonoBehaviour
         yield return new WaitForSeconds(time);
 
         _animator.Play(ANIMATION_NAME);
+    }
+
+    private void PlaySound()
+    {
+        SoundsManager.Instance.PlaySound(SoundType.MainClick);
     }
 
     private void CatchFish()

@@ -1,3 +1,4 @@
+using FishingHim.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -48,6 +49,7 @@ public class MainMenuHook : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             return;
 
         spriteRenderer.material = outlineMaterial;
+        SoundsManager.Instance.PlaySound(SoundType.MainSelectMiniGame);
     }
 
     public void OnPointerExit(PointerEventData eventData)
