@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-public class MainMenuHook : MonoBehaviour
+public class MainMenuHook : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     Button hookButton;
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] Material defaultMaterial;
+    [SerializeField] Material outlineMaterial;
     [SerializeField] LevelToLoad levelToLoad = LevelToLoad.MainScene;
 
     private enum LevelToLoad { MainScene, MiniGame1, MiniGame2, MiniGame3 }
@@ -16,8 +20,10 @@ public class MainMenuHook : MonoBehaviour
 
     private void Start()
     {
+        spriteRenderer.material = defaultMaterial;
+
         switch (levelToLoad)
-        { 
+        {
             case LevelToLoad.MainScene:
                 hookButton.onClick.AddListener(() => { SceneLoader.Instance.Load_MainScene(); });
                 break;
@@ -31,5 +37,15 @@ public class MainMenuHook : MonoBehaviour
                 hookButton.onClick.AddListener(() => { SceneLoader.Instance.Load_MiniGame3(); });
                 break;
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        spriteRenderer.material = outlineMaterial;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        spriteRenderer.material = defaultMaterial;
     }
 }
