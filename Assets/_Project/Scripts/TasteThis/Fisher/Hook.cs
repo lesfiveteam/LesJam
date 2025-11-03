@@ -96,10 +96,12 @@ namespace FishingHim.TasteThis
         private IEnumerator Reset()
         {
             yield return new WaitForSeconds(1f);
-            _collider.enabled = true;
+            //_collider.enabled = true;
             _animator.SetBool("IsCatching", false);
             _animator.SetBool("IsCasting", true);
             _fisher.Reset();
+            yield return new WaitForSeconds(6f);
+            _collider.enabled = true;
         }
 
         public IEnumerator GameOver(bool isWin)
