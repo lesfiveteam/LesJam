@@ -2,6 +2,7 @@ using FishingHim.Common;
 using FishingHim.VortexFish.Generator;
 using System;
 using System.Collections;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace FishingHim.VortexFish.Manager
         public static VortexFishManager Instance { get { return _instance; } }
         public Fish Fish = null;
         public RowGenerator RowGenerator = null;
+        public TMP_Text FishermanCountTMPro;
 
         [Header("Баланс настройки")]
         private int boostCount = 0;
@@ -64,10 +66,17 @@ namespace FishingHim.VortexFish.Manager
             {
                 Debug.LogError("Не заполнен RowGenerator");
             }
+            if (!FishermanCountTMPro)
+            {
+                Debug.LogError("Не заполнен FishermanCountTMPro");
+            }
         }
 
         private void Start()
         {
+            // UI текст
+            _instance.FishermanCountTMPro.text =
+                _instance.deadFishermanCount + "/" + _instance.deadFishermanCountForWin;
             SoundsManager.Instance.PlaySound(SoundType.VortexFishStart);
             SoundsManager.Instance.PlaySound(SoundType.VortexFishMusic);
         }
@@ -90,6 +99,9 @@ namespace FishingHim.VortexFish.Manager
         public static void AddDeadFisherman()
         {
             _instance.deadFishermanCount++;
+            // UI текст
+            _instance.FishermanCountTMPro.text = 
+                _instance.deadFishermanCount + "/" + _instance.deadFishermanCountForWin;
             if (_instance.deadFishermanCount >= _instance.deadFishermanCountForWin)
             {
                 if (!Instance.IsEndGame)
