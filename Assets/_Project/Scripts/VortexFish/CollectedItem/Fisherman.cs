@@ -18,11 +18,17 @@ namespace FishingHim.VortexFish.CollectedItem
             {
                 // Сбивает рыбаков
                 VortexFishManager.AddDeadFisherman();
+                SoundsManager.Instance.PlaySound(SoundType.VortexFishTurboCollision);
                 Destroy(gameObject);
             }
             else
             {
-                ProgressManager.instance.Lose();
+                if (!VortexFishManager.Instance.IsEndGame)
+                {
+                    SoundsManager.Instance.PlaySound(SoundType.VortexFishCrash);
+                    VortexFishManager.Instance.IsEndGame = true;
+                    ProgressManager.instance.Lose();
+                } 
             }
         }
     }
