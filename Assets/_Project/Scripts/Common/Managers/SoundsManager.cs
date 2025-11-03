@@ -39,6 +39,7 @@ namespace FishingHim.Common
         FishAndFishermanFastMusic3,
         FishAndFishermanFastMusic4,
         FishAndFishermanFastMusic5,
+        ExitButton
         //Здесь писать виды вуков
     }
 

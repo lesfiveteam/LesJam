@@ -11,17 +11,13 @@ namespace FishingHim.FishAndFisherman.Tutorial
 
         private void Awake()
         {
-            if (PlayerPrefs.GetInt("FishAndFishermanTutorialComplete") == 0)
-            {
-                StartCoroutine(TutorialRoutine());
-            }
+            StartCoroutine(TutorialRoutine());
         }
 
         private IEnumerator TutorialRoutine()
         {
             yield return new WaitForSeconds(_fadeDelay);
             Instantiate(_tutorial, _tutorialHolder);
-            PlayerPrefs.SetInt("FishAndFishermanTutorialComplete", 1);
             Time.timeScale = 0;
         }
     }

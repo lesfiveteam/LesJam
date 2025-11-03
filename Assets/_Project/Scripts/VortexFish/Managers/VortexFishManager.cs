@@ -37,6 +37,9 @@ namespace FishingHim.VortexFish.Manager
         public float TurboSpeed = 4f;
         public float GeneratorTime = 2f; // Каждые столько секунд будет создавать объект на линии
         public float GeneratorTurboTime = 1f; // Каждые столько секунд будет создавать объект на линии в турбо
+        [SerializeField] private Material turboMaterial;
+        [SerializeField] private Material normalMeterial;
+        [SerializeField] private MeshRenderer[] fishMeshes;
 
         [Header("Анимация рыбы")]
         [SerializeField]
@@ -139,6 +142,11 @@ namespace FishingHim.VortexFish.Manager
          */
         private void ExitFromTurbo()
         {
+            foreach (MeshRenderer renderer in fishMeshes)
+            {
+                renderer.material = normalMeterial;
+            }
+
             InTurbo = false;
             SoundsManager.Instance.StopSound(SoundType.VortexFishTurboEnd);
             SoundsManager.Instance.PlaySound(SoundType.VortexFishSpeedUp);
@@ -150,6 +158,11 @@ namespace FishingHim.VortexFish.Manager
          */
         private void EnterInTurbo()
         {
+            foreach(MeshRenderer renderer in fishMeshes)
+            {
+                renderer.material = turboMaterial;
+            }
+
             InTurbo = true;
             SoundsManager.Instance.PlaySound(SoundType.VortexFishTurboStart);
             SoundsManager.Instance.PlaySound(SoundType.VortexFishSpeedUp);
