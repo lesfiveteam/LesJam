@@ -16,6 +16,7 @@ namespace FishingHim.VortexFish.Manager
         public Fish Fish = null;
         public RowGenerator RowGenerator = null;
         public TMP_Text FishermanCountTMPro;
+        public GameObject UITutorial = null;
 
         [Header("Баланс настройки")]
         private int boostCount = 0;
@@ -42,6 +43,7 @@ namespace FishingHim.VortexFish.Manager
         private float animationSpeedInTurbo = 3f;
 
         public bool IsEndGame = false;
+
 
         private void Awake()
         {
@@ -77,8 +79,11 @@ namespace FishingHim.VortexFish.Manager
             // UI текст
             _instance.FishermanCountTMPro.text =
                 _instance.deadFishermanCount + "/" + _instance.deadFishermanCountForWin;
-            SoundsManager.Instance.PlaySound(SoundType.VortexFishStart);
             SoundsManager.Instance.PlaySound(SoundType.VortexFishMusic);
+            if (UITutorial)
+            {
+                StartCoroutine(WaitAndShowTutorial());
+            }
         }
 
         /**
@@ -160,6 +165,17 @@ namespace FishingHim.VortexFish.Manager
         {
             yield return new WaitForSeconds(turboTimeForSpawnItems);
             RowGenerator.CanGenerate = false;
+        }
+
+
+        /**
+         * Через X секунд ставит игру на паузу и показывает туториал
+         */
+        private IEnumerator WaitAndShowTutorial()
+        {
+            yield return new WaitForSeconds(2f);
+            UITutorial.SetActive(true);
+            Time.timeScale = 0f;
         }
     }
 }
