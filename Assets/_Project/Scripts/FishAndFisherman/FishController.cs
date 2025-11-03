@@ -111,6 +111,7 @@ namespace FishingHim.FishAndFisherman.Fish
         {
             if (!_isRolling && !_isJumping)
             {
+                SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanRoll);
                 _isRolling = true;
                 _rollTimer = 0f;
                 _currentRollRotation = 0f;
@@ -141,7 +142,6 @@ namespace FishingHim.FishAndFisherman.Fish
                 }
                 else
                 {
-                    SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanRoll);
                     _isRolling = false;
                     _currentRollRotation = 0f;
                     _moveSpeed = _originalMoveSpeed;
