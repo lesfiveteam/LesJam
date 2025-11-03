@@ -92,8 +92,12 @@ namespace FishingHim.VortexFish.Manager
             _instance.deadFishermanCount++;
             if (_instance.deadFishermanCount >= _instance.deadFishermanCountForWin)
             {
-                // Победа
-                ProgressManager.instance.Win(0);
+                if (!Instance.IsEndGame)
+                {
+                    // Победа
+                    Instance.IsEndGame = true;
+                    ProgressManager.instance.Win(0);
+                }
             }
         }
         /**
