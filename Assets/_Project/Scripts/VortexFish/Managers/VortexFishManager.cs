@@ -2,9 +2,11 @@ using FishingHim.Common;
 using FishingHim.VortexFish.Generator;
 using System;
 using System.Collections;
+using System.Linq.Expressions;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace FishingHim.VortexFish.Manager
 {
@@ -17,6 +19,7 @@ namespace FishingHim.VortexFish.Manager
         public RowGenerator RowGenerator = null;
         public TMP_Text FishermanCountTMPro;
         public GameObject UITutorial = null;
+        [SerializeField] private Button exitButton;
 
         [Header("Баланс настройки")]
         private int boostCount = 0;
@@ -186,9 +189,11 @@ namespace FishingHim.VortexFish.Manager
          */
         private IEnumerator WaitAndShowTutorial()
         {
+            exitButton.interactable = false;
             yield return new WaitForSeconds(2f);
             UITutorial.SetActive(true);
             Time.timeScale = 0f;
+            exitButton.interactable = true;
         }
     }
 }
