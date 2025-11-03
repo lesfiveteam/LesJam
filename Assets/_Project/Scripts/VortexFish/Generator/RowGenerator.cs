@@ -11,6 +11,9 @@ namespace FishingHim.VortexFish.Generator
      */
     public class RowGenerator : MonoBehaviour
     {
+        // Singleton
+        private static VortexFishManager _instance;
+        public static VortexFishManager Instance { get { return _instance; } }
         [SerializeField]
         private List<RowPattern> rowPatterns;
         private List<ItemGenerator> itemGenerators = new List<ItemGenerator>();
@@ -26,6 +29,8 @@ namespace FishingHim.VortexFish.Generator
         private int currentReplayNumber = 0;
         // Прошлый индекс паттерна
         private int lastPatternIndex = 0;
+
+        public bool CanGenerate = true;
 
         private void Start()
         {
@@ -45,7 +50,10 @@ namespace FishingHim.VortexFish.Generator
                 ? VortexFishManager.Instance.GeneratorTurboTime
                 : VortexFishManager.Instance.GeneratorTime;
             yield return new WaitForSeconds(time);
-            Generate();
+            if (CanGenerate)
+            {
+                Generate();
+            }
             StartCoroutine(WaitAndGenerate());
         }
 

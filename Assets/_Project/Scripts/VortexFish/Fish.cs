@@ -12,8 +12,6 @@ namespace FishingHim.VortexFish
         [Header("Движение")]
         public float moveSpeed = 1f;
         public float moveSmoothness = 0.8f;
-        public float leftBound = -2f;
-        public float rightBound = 2f;
         public float decelerationSpeed = 1f;
 
         [Header("Физика")]
@@ -24,6 +22,8 @@ namespace FishingHim.VortexFish
 
         public bool InRage { get; private set; }
 
+        private Animator animator;
+
         void Start()
         {
             rb = GetComponent<Rigidbody>();
@@ -31,6 +31,7 @@ namespace FishingHim.VortexFish
             {
                 Debug.LogError("Нет Rigidbody на Fish");
             }
+            animator = GetComponent<Animator>();
         }
 
         void Update()
@@ -80,6 +81,16 @@ namespace FishingHim.VortexFish
             {
                 // Ничего не нажато
                 rb.linearVelocity *= moveSmoothness;
+            }
+        }
+        /**
+         * Ускоряет или замедляет анимацию
+         */
+        public void SetAnimationSpeed(float speed)
+        {
+            if (animator != null)
+            {
+                animator.speed = speed;
             }
         }
     }

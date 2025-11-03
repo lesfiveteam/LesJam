@@ -1,4 +1,5 @@
 using FishingHim.Common;
+using FishingHim.VortexFish.Generator;
 using System;
 using System.Collections;
 using UnityEditor;
@@ -12,6 +13,7 @@ namespace FishingHim.VortexFish.Manager
         private static VortexFishManager _instance;
         public static VortexFishManager Instance { get { return _instance; } }
         public Fish Fish = null;
+        public RowGenerator RowGenerator = null;
 
         [Header("Баланс настройки")]
         private int boostCount = 0;
@@ -25,11 +27,17 @@ namespace FishingHim.VortexFish.Manager
         [Header("Турбо")]
         [SerializeField]
         private float turboTime = 3f;
+        [SerializeField] 
+        private float turboTimeForSpawnItems = 1f;
         private bool InTurbo = false;
         public float Speed = 2f;
         public float TurboSpeed = 4f;
         public float GeneratorTime = 2f; // Каждые столько секунд будет создавать объект на линии
         public float GeneratorTurboTime = 1f; // Каждые столько секунд будет создавать объект на линии в турбо
+
+        [Header("Анимация рыбы")]
+        [SerializeField]
+        private float animationSpeedInTurbo = 3f;
 
         private void Awake()
         {
@@ -49,6 +57,10 @@ namespace FishingHim.VortexFish.Manager
                 {
                     Debug.LogError("Не заполнен Fish!");
                 }
+            }
+            if (!RowGenerator)
+            {
+                Debug.LogError("Не заполнен RowGenerator");
             }
         }
 
@@ -73,9 +85,7 @@ namespace FishingHim.VortexFish.Manager
             if (_instance.deadFishermanCount >= _instance.deadFishermanCountForWin)
             {
                 // Победа
-                // Win принимает номер мини-игры, с которым она ассоциируется на главном экране
-                // @todo Если вдруг VortexFish не будет первой (счет идет с нуля) по счету игрой, значение надо поменять
-                ProgressManager.instance.Win(0); 
+                ProgressManager.instance.Win(0);
             }
         }
         /**
@@ -100,17 +110,28 @@ namespace FishingHim.VortexFish.Manager
          */
         private void ExitFromTurbo()
         {
-            Debug.Log("Вышли из турбо");
             InTurbo = false;
+            Fish.SetAnimationSpeed(1f);
+            RowGenerator.CanGenerate = true;
         }
         /** 
          * Войти в турбо
          */
         private void EnterInTurbo()
         {
-            Debug.Log("Вошли в турбо");
             InTurbo = true;
+            StartCoroutine(WaitAndStopGenerate());
             StartCoroutine(WaitAndExitFromTurbo());
+            Fish.SetAnimationSpeed(animationSpeedInTurbo);
+        }
+
+        /** 
+         * Через время запрещает генерацию на время, чтобы игрок успел отойти от турбо режима и не умер быстро
+         */
+        private IEnumerator WaitAndStopGenerate()
+        {
+            yield return new WaitForSeconds(turboTimeForSpawnItems);
+            RowGenerator.CanGenerate = false;
         }
     }
 }
