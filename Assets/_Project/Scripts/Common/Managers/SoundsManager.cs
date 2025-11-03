@@ -41,7 +41,7 @@ namespace FishingHim.Common
         //Здесь писать виды вуков
     }
 
-    public class SoundsManager : SingletonDontDestroyOnLoad<SoundsManager>
+    public class SoundsManager : Singleton<SoundsManager>
     {
         [SerializeField] private SoundsData[] _soundsDatas;
         private Dictionary<SoundType, AudioClipData> _soundIdPairs = new();
