@@ -135,11 +135,8 @@ namespace FishingHim.Common
 
         public void RestartGame()
         {
-            if (GetNumberOfAliveFishes() <= 0)
-            {
-                DeletePlayerData();
-                NewGame();
-            }
+            DeletePlayerData();
+            NewGame();
         }
 
         private void DeletePlayerData()
