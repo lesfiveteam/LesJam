@@ -105,7 +105,7 @@ namespace FishingHim.TasteThis
             if (isWin)
             {
                 yield return new WaitForSeconds(1.5f);
-                FaderManager._instance.Load_MainScene();
+                SceneLoader._instance.Load_MainScene();
             }
 
             Destroy(this);

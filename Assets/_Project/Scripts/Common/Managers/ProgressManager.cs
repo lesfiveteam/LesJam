@@ -7,29 +7,33 @@ namespace FishingHim.Common
 {
     public class ProgressManager : MonoBehaviour
     {
-        [SerializeField] UnityEvent eventToPlayOnWin;   //сюда можно (необязательно) добавить функции загрузки уровня, визуальные эффекты и прочее,
-                                                        //что хочется вызывать по успешному завершении мини-игры.
-        [SerializeField] UnityEvent eventToPlayOnLose;  //аналогично для проигрыша
+        public UnityEvent eventToPlayOnWin;   //сюда можно (необязательно) добавить функции загрузки уровня, визуальные эффекты и прочее,
+                                              //что хочется вызывать по успешному завершении мини-игры.
+        public UnityEvent eventToPlayOnLose;  //аналогично для проигрыша
 
-        const int NUMBER_OF_GAMES = 3;
+        private const int NUMBER_OF_GAMES = 3;
+        private const int NUMBERS_OF_FISHES = 5;
 
-        int numOfCompletedGames;
-        int numOfDeaths;
-        bool[] completedGamesArray;
+        private int numOfCompletedGames;
+        private int numOfDeaths;
 
-        int GetNumberOfSuccessfulGames() { return numOfCompletedGames; }
-        int GetNumberOfDeaths() { return numOfDeaths; }
-        bool[] GetCompletedLevelsArray() { return completedGamesArray; }
+        public bool[] CompletedGamesArray { get; private set; }
+
+        public int GetNumberOfFishes() { return NUMBERS_OF_FISHES; }
+        public int GetNumberOfAliveFishes() { return NUMBERS_OF_FISHES - numOfDeaths; }
+
 
         public static ProgressManager instance;
 
-        void Awake()
+        private void Awake()
         {
-            completedGamesArray = new bool[NUMBER_OF_GAMES];
+            CompletedGamesArray = new bool[NUMBER_OF_GAMES];
 
             if (instance == null)
             {
                 instance = this;
+
+                DeletePlayerData();
             }
             else if (instance != this)
             {
@@ -42,10 +46,12 @@ namespace FishingHim.Common
         //completedLevelNumber начинается с 0
         public void Win(int completedLevelNumber)
         {
-            if (completedGamesArray[completedLevelNumber])  //если уровень уже был пройден
+            if (CompletedGamesArray[completedLevelNumber])  //если уровень уже был пройден
                 return;
+
             numOfCompletedGames++;
-            completedGamesArray[completedLevelNumber] = true;
+            CompletedGamesArray[completedLevelNumber] = true;
+
             SavePlayerData();
 
             eventToPlayOnWin?.Invoke();
@@ -54,19 +60,22 @@ namespace FishingHim.Common
         public void Lose()
         {
             numOfDeaths++;
+
             SavePlayerData();
 
             eventToPlayOnLose?.Invoke();
         }
 
-        void SavePlayerData()
+        private void SavePlayerData()
         {
             PlayerPrefs.SetInt("numOfSuccessfulGames", numOfCompletedGames);
             PlayerPrefs.SetInt("numOfDeaths", numOfDeaths);
-            for (int i = 0; i < completedGamesArray.Length; i++)
+
+            for (int i = 0; i < CompletedGamesArray.Length; i++)
             {
                 string playerPrefKey = $"level{i}Complete";
-                if (completedGamesArray[i])
+
+                if (CompletedGamesArray[i])
                 {
                     PlayerPrefs.SetInt(playerPrefKey, 1);
                 }
@@ -77,18 +86,19 @@ namespace FishingHim.Common
             }
         }
 
-        public void LoadPlayerData()
-        {
-            numOfCompletedGames = PlayerPrefs.GetInt("numOfSuccessfulGames");
-            numOfDeaths = PlayerPrefs.GetInt("numOfDeaths");
-            for (int i = 0; i < completedGamesArray.Length; i++)
-            {
-                string playerPrefKey = $"level{i}Complete";
-                completedGamesArray[i] = Convert.ToBoolean(PlayerPrefs.GetInt(playerPrefKey));
-            }
-        }
+        //private void LoadPlayerData()
+        //{
+        //    numOfCompletedGames = PlayerPrefs.GetInt("numOfSuccessfulGames");
+        //    numOfDeaths = PlayerPrefs.GetInt("numOfDeaths");
 
-        public void DeletePlayerData()
+        //    for (int i = 0; i < CompletedGamesArray.Length; i++)
+        //    {
+        //        string playerPrefKey = $"level{i}Complete";
+        //        CompletedGamesArray[i] = Convert.ToBoolean(PlayerPrefs.GetInt(playerPrefKey));
+        //    }
+        //}
+
+        private void DeletePlayerData()
         {
             PlayerPrefs.DeleteAll();
         }

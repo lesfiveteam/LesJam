@@ -31,7 +31,7 @@ namespace FishingHim
                 if (_autoLose)
                     ProgressManager.instance.Lose();
                 else
-                    FaderManager._instance.Load_MainScene();
+                    SceneLoader._instance.Load_MainScene();
 
                 Destroy(this);
             }

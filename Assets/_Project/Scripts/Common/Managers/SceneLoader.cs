@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FaderManager : MonoBehaviour
+public class SceneLoader : MonoBehaviour
 {
     private const string Scene_Main = "MainScene";
     private const string Scene_MiniGame1 = "VortexFishScene";
@@ -11,7 +11,7 @@ public class FaderManager : MonoBehaviour
 
     private bool _isLoading;
 
-    public static FaderManager _instance;
+    public static SceneLoader _instance;
 
     private void Awake()
     {
