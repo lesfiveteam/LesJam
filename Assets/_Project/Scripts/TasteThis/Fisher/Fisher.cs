@@ -4,16 +4,10 @@ namespace FishingHim.TasteThis
 {
     public class Fisher : MonoBehaviour
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
+        private Animator _animator;
 
-        }
+        private void Start() => _animator = GetComponent<Animator>();
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        public void Reset() => _animator.SetTrigger("Reset");
     }
 }

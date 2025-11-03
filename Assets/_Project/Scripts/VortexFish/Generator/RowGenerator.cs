@@ -16,7 +16,6 @@ namespace FishingHim.VortexFish.Generator
         public static VortexFishManager Instance { get { return _instance; } }
         [SerializeField]
         private List<RowPattern> rowPatterns;
-        private List<ItemGenerator> itemGenerators = new List<ItemGenerator>();
         [SerializeField]
         private List<Transform> lineGeneratorTransform = new List<Transform>();
 
@@ -95,7 +94,7 @@ namespace FishingHim.VortexFish.Generator
         {
             if (collectedItem)
             {
-                return Instantiate(collectedItem.transform, line.transform.position, Quaternion.identity);
+                return Instantiate(collectedItem.transform, line.transform.position, collectedItem.transform.rotation);
             }
             return null;
         }
