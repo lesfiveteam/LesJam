@@ -57,10 +57,8 @@ namespace FishingHim.Common
         //completedLevelNumber начинается с 0
         public void Win(int completedLevelNumber)
         {
-            if (CompletedGamesArray[completedLevelNumber])  //если уровень уже был пройден
-                return;
-
-            numOfCompletedGames++;
+            if (!CompletedGamesArray[completedLevelNumber])  //если уровень не был пройден
+                numOfCompletedGames++;
 
             if (numOfCompletedGames >= NUMBER_OF_GAMES)
             {
