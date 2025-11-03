@@ -7,8 +7,8 @@ namespace FishingHim.FishAndFisherman.Tutorial
     {
         public void OnPointerClick(PointerEventData eventData)
         {
-            Destroy(gameObject);
             Time.timeScale = 1f;
+            Destroy(gameObject);
         }
     }
 }
