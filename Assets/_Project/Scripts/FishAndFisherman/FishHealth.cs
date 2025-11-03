@@ -33,6 +33,7 @@ namespace FishingHim.FishAndFisherman.Fish
 
         private void LoseHp()
         {
+            SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanDamage);
             _hpImages[_health - 1].gameObject.SetActive(false);
             _health--;
             _timerManager.RestartSection();

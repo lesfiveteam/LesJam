@@ -1,3 +1,4 @@
+using FishingHim.Common;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -97,6 +98,7 @@ namespace FishingHim.FishAndFisherman.Fish
         {
             if (!_isJumping && !_isRolling)
             {
+                SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanJump);
                 _isJumping = true;
                 _jumpTimer = 0f;
                 _currentJumpRotation = 0f;
@@ -139,6 +141,7 @@ namespace FishingHim.FishAndFisherman.Fish
                 }
                 else
                 {
+                    SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanRoll);
                     _isRolling = false;
                     _currentRollRotation = 0f;
                     _moveSpeed = _originalMoveSpeed;
@@ -211,6 +214,7 @@ namespace FishingHim.FishAndFisherman.Fish
                 }
                 else
                 {
+                    SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanFall);
                     _isJumping = false;
                     Vector3 newPosition = _fish.position;
                     newPosition.y = _startPosition.y;
@@ -237,6 +241,7 @@ namespace FishingHim.FishAndFisherman.Fish
                 yield return null;
             }
 
+            SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanJump);
             _isJumping = true;
             Vector3 startPos = _fish.position;
             Vector3 targetPos = startPos + Vector3.forward * jumpDistance;
@@ -266,6 +271,7 @@ namespace FishingHim.FishAndFisherman.Fish
             _fish.position = targetPos;
             _fish.rotation = startRotation;
             _isJumping = false;
+            SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanFall);
             _movementAction.action.Enable();
             _jumpAction.action.Enable();
             _rollAction.action.Enable();

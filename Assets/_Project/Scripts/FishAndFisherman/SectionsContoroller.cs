@@ -21,7 +21,7 @@ namespace FishingHim.FishAndFisherman.Sections
 
         private void Start()
         {
-            //SoundsManager.Instance.PlaySound(_musics[_sectionIndex]);
+            SoundsManager.Instance.PlaySound(_musics[_sectionIndex], true);
         }
 
         public void GoToNextSection()
@@ -34,9 +34,10 @@ namespace FishingHim.FishAndFisherman.Sections
             }
             else
             {
-                //SoundsManager.Instance.PlaySound(_musics[_sectionIndex]);
+                SoundsManager.Instance.PlaySound(_musics[_sectionIndex], true);
                 _fishController.SectionJump(_nextSectionDistance);
                 StartCoroutine(MoveCameraSmoothly(_nextSectionDistance));
+                SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanSection);
             }
         }
 
