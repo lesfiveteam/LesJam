@@ -30,8 +30,7 @@ namespace FishingHim.TasteThis
         private GameObject _3dModel;
         [SerializeField]
         private Transform _itemHandler;
-        [SerializeField]
-        SpriteRenderer _auraRenderer;
+
         private Animator _animator;
         private float _auraMaxAlpha = 0.5f;
         private float _auraStep;
@@ -148,9 +147,9 @@ namespace FishingHim.TasteThis
         private void SetLevel()
         {
             SetSpeed();
-            Color newColor = _auraRenderer.color;
+            Color newColor = _renderer.color;
             newColor.a = _capacity * _auraStep;
-            _auraRenderer.color = newColor;
+            _renderer.color = newColor;
             OnLevelChange?.Invoke(_capacity);
         }
 

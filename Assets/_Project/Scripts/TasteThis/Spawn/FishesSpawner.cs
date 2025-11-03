@@ -14,8 +14,8 @@ public class FishesSpawner : MonoBehaviour
 
     [SerializeField]
     private GameObject _fishPrefab;
-    [SerializeField]
-    private GameObject _playerFish;
+    //[SerializeField]
+    //private GameObject _playerFish;
 
     [Serializable]
     private class RestrictedArea
@@ -45,7 +45,7 @@ public class FishesSpawner : MonoBehaviour
         for (int i = 0; i < _fastFishesNumber; i++)
             CreateFish(SmallFish.SmallFishType.Fast);
 
-        SetPosition(_playerFish.transform);
+        //SetPosition(_playerFish.transform);
         Destroy(gameObject);
     }
 

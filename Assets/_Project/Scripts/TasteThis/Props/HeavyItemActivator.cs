@@ -13,6 +13,7 @@ namespace FishingHim.TasteThis
         private Item _item;
         private AudioSource _audioSource;
         private bool _isActive = false;
+        private Animator _animator;
 
         private void Start()
         {
@@ -22,6 +23,7 @@ namespace FishingHim.TasteThis
             _player.OnLevelChange += PlayerChangeLevel;
             _mass = GetComponent<Rigidbody2D>().mass;
             _item = GetComponent<Item>();
+            _animator = GetComponent<Animator>();
         }
 
         private void PlayerChangeLevel(float capacity)
@@ -30,6 +32,7 @@ namespace FishingHim.TasteThis
             {
                 _renderer.color = _inactiveColor;
                 _isActive = false;
+                _animator.SetBool("IsActive", false);
 
                 if (_item.IsRaised())
                     _item.Drop();
@@ -37,8 +40,9 @@ namespace FishingHim.TasteThis
             else if (!_isActive)
             {
                 _renderer.color = _activeColor;
-                _audioSource.Play();
+                //_audioSource.Play();
                 _isActive = true;
+                _animator.SetBool("IsActive", true);
             }
         }
     }

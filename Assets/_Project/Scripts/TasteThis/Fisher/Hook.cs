@@ -80,7 +80,7 @@ namespace FishingHim.TasteThis
             }
 
             _collider.enabled = false;
-            _animator.SetBool("IsMoving", true);
+            _animator.SetBool("IsCatching", true);
             caughtItem.Drag(_tip);
             _audioSource.Play();
             Destroy(caughtItem.gameObject, _animDuration / 2f);
@@ -93,7 +93,7 @@ namespace FishingHim.TasteThis
         {
             yield return new WaitForSeconds(_animDuration);
             _collider.enabled = true;
-            _animator.SetBool("IsMoving", false);
+            _animator.SetBool("IsCatching", false);
         }
 
         public IEnumerator GameOver(bool isWin)

@@ -35,6 +35,7 @@ namespace FishingHim.TasteThis
         private bool _isEscaping = false;
         private float _escapingTimer = 0f;
         private float _maxEscapingTimer = 2f;
+        private float _initYScale;
 
         public SmallFishType FishType 
         {
@@ -49,8 +50,10 @@ namespace FishingHim.TasteThis
 
         private void Start()
         {
+            _initYScale = transform.localScale.y;
             _hook = Hook.Instance;
             _hook.FishCaught += Hook_OnFishCaught;
+            _hook.ItemCaught += OnItemCaught;
             RotateFish(FishDirection.TowardsHook);
             StartCoroutine(WobblingProceed());
         }
@@ -60,6 +63,9 @@ namespace FishingHim.TasteThis
             Vector2 direction = (_hook.GetHookPosition() - (Vector2)transform.position).normalized * (int)fishDirection;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
+            var newScale = transform.localScale;
+            newScale.y = -(int)fishDirection * _initYScale;
+            transform.localScale = newScale;
         }
 
         private void Hook_OnFishCaught(object sender, System.EventArgs e)
@@ -67,6 +73,11 @@ namespace FishingHim.TasteThis
             _isEscaping = true;
             RotateFish(FishDirection.AwayFromHook);
             _escapingTimer = 0f;
+        }
+
+        private void OnItemCaught(Item _)
+        {
+            Hook_OnFishCaught(null, null);
         }
 
         private IEnumerator StartWobbling(float time, float wobblingFactor)
@@ -124,6 +135,7 @@ namespace FishingHim.TasteThis
         public void OnDestroy()
         {
             _hook.FishCaught -= Hook_OnFishCaught;
+            _hook.ItemCaught -= OnItemCaught;
         }
 
         public void Drag(Transform carrier)
