@@ -89,6 +89,7 @@ namespace FishingHim.Common
                 IsWinGame = false;
 
                 eventToEndGame?.Invoke();
+                DeletePlayerData();
             }
             else
             {
