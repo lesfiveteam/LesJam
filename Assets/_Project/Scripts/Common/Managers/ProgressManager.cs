@@ -20,7 +20,8 @@ namespace FishingHim.Common
 
         public bool[] CompletedGamesArray { get; private set; }
 
-        public bool IsWin { get; private set; }
+        public bool IsWinGame { get; private set; }
+        public bool IsWinMiniGame { get; private set; }
 
         public int GetNumberOfFishes() { return NUMBERS_OF_FISHES; }
         public int GetNumberOfAliveFishes() { return NUMBERS_OF_FISHES - numOfDeaths; }
@@ -63,12 +64,14 @@ namespace FishingHim.Common
 
             if (numOfCompletedGames >= NUMBER_OF_GAMES)
             {
-                IsWin = true;
+                IsWinGame = true;
 
                 eventToEndGame?.Invoke();
             }
             else
             {
+                IsWinMiniGame = true;
+
                 CompletedGamesArray[completedLevelNumber] = true;
 
                 SavePlayerData();
@@ -79,16 +82,20 @@ namespace FishingHim.Common
 
         public void Lose()
         {
+            Debug.Log("do: " + numOfDeaths);
             numOfDeaths++;
+            Debug.Log("posle: " + numOfDeaths);
 
             if (numOfDeaths >= NUMBERS_OF_FISHES)
             {
-                IsWin = false;
+                IsWinGame = false;
 
                 eventToEndGame?.Invoke();
             }
             else
             {
+                IsWinMiniGame = false;
+
                 SavePlayerData();
 
                 eventToPlayOnLose?.Invoke();
@@ -129,8 +136,11 @@ namespace FishingHim.Common
 
         public void RestartGame()
         {
-            DeletePlayerData();
-            NewGame();
+            if (GetNumberOfAliveFishes() <= 0)
+            {
+                DeletePlayerData();
+                NewGame();
+            }
         }
 
         private void DeletePlayerData()

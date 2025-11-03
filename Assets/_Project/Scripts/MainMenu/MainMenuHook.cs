@@ -20,7 +20,10 @@ public class MainMenuHook : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private void Start()
     {
-        spriteRenderer.material = defaultMaterial;
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.material = defaultMaterial;
+        }
 
         switch (levelToLoad)
         {
@@ -41,11 +44,17 @@ public class MainMenuHook : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (spriteRenderer == null)
+            return;
+
         spriteRenderer.material = outlineMaterial;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (spriteRenderer == null)
+            return;
+
         spriteRenderer.material = defaultMaterial;
     }
 }

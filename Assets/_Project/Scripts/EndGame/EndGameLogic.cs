@@ -6,8 +6,10 @@ public class EndGameLogic : MonoBehaviour
 {
     private Image _background;
 
-    [SerializeField] private Sprite _winSprite;
-    [SerializeField] private Sprite _defeatSprite;
+    [SerializeField] private Sprite _winMinigameSprite;
+    [SerializeField] private Sprite _defeatMinigameSprite;
+    [SerializeField] private Sprite _winGameSprite;
+    [SerializeField] private Sprite _defeatGameSprite;
 
     private Sprite _currentSprite;
 
@@ -23,9 +25,15 @@ public class EndGameLogic : MonoBehaviour
 
     public void SetCurrentStateSprite()
     {
+        if (ProgressManager.instance.GetNumberOfAliveFishes() <= 0)
+        {
+            _currentSprite = ProgressManager.instance.IsWinGame ? _winGameSprite : _defeatGameSprite;
+        }
+        else
+        {
+            _currentSprite = ProgressManager.instance.IsWinGame ? _winMinigameSprite : _defeatMinigameSprite;
+        }
         
-        _currentSprite = ProgressManager.instance.IsWin ? _winSprite : _defeatSprite;
-
         _background.sprite = _currentSprite;
     }
 
