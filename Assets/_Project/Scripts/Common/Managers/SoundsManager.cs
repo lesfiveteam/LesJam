@@ -76,6 +76,17 @@ namespace FishingHim.Common
             _soundIdPairs[soundType].AudioSource?.PlayOneShot(_soundIdPairs[soundType].AudioClip);
         }
 
+        public void StopSound(SoundType soundType)
+        {
+            if (!_soundIdPairs.ContainsKey(soundType))
+            {
+                Debug.LogWarning($"There's no audioclip for sound type {soundType}!");
+                return;
+            }
+
+            _soundIdPairs[soundType].AudioSource.Stop();
+        }
+
         private IEnumerator ResetCoolDown(SoundType soundType)
         {
             yield return _waitForCoolDown;
