@@ -69,4 +69,44 @@ public class ProgressView : MonoBehaviour
             _fishes.Add(newFish.GetComponent<Transform>());
         }
     }
+
+    public void FishToHook(Transform hook)
+    {
+        if (_fishes == null || _fishes.Count == 0 || hook == null)
+            return;
+
+        Transform nearestFish = FindNearestFish(hook.position);
+
+        if (nearestFish != null)
+        {
+            Fish fishComponent = nearestFish.GetComponent<Fish>();
+
+            if (fishComponent != null)
+            {
+                fishComponent.GoToHook(hook);
+            }
+        }
+    }
+
+    private Transform FindNearestFish(Vector3 hookPosition)
+    {
+        if (_fishes.Count == 0)
+            return null;
+
+        Transform nearestFish = _fishes[0];
+        float nearestDistance = Vector3.Distance(nearestFish.position, hookPosition);
+
+        for (int i = 1; i < _fishes.Count; i++)
+        {
+            float distance = Vector3.Distance(_fishes[i].position, hookPosition);
+
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestFish = _fishes[i];
+            }
+        }
+
+        return nearestFish;
+    }
 }
