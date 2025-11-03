@@ -7,10 +7,11 @@ public class Tutorial : MonoBehaviour
 
     private void Start() => Time.timeScale = 0f;
 
-    private void OnExit()
+    public void OnExit(GameObject sender)
     {
-        Destroy(gameObject);
+        Destroy(sender);
         Time.timeScale = 1f;
         _pause.SetActive(true);
+        Destroy(gameObject);
     }
 }

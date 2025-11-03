@@ -9,5 +9,7 @@ namespace FishingHim.TasteThis
         private void Start() => _animator = GetComponent<Animator>();
 
         public void Reset() => _animator.SetTrigger("Reset");
+
+        public void Afall() => _animator.SetTrigger("Afall");
     }
 }

@@ -19,8 +19,8 @@ namespace FishingHim.TasteThis
         private float _animDuration;
         private Collider2D _collider;
         private int _fishesNumber;
-        private float _capacity = 2f;
-        private AudioSource _audioSource;
+        private float _capacity = 3f;
+        //private AudioSource _audioSource;
         private bool _isGameOver = false;
         private float _waterYLevel = 0.8f;
 
@@ -30,7 +30,7 @@ namespace FishingHim.TasteThis
         {
             _animator = GetComponent<Animator>();
             _collider = GetComponent<Collider2D>();
-            _audioSource = GetComponent<AudioSource>();
+            //_audioSource = GetComponent<AudioSource>();
             _animDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
             Instance = this;
         }
@@ -65,7 +65,7 @@ namespace FishingHim.TasteThis
 
                 if (_fishesNumber >= _targetFishesNumber)
                 {
-                    ProgressManager.instance.Lose();
+                    //ProgressManager.instance.Lose();
                     StartCoroutine(GameOver(false));
                 }
 
@@ -76,7 +76,7 @@ namespace FishingHim.TasteThis
 
                 if (item.Weight > _capacity)
                 {
-                    ProgressManager.instance.Win(2);
+                    // ProgressManager.instance.Win(2);
                     StartCoroutine(GameOver(true));
                 }
             }
@@ -85,7 +85,8 @@ namespace FishingHim.TasteThis
             _animator.SetBool("IsCatching", true);
             _animator.SetBool("IsCasting", false);
             caughtItem.Drag(_tip);
-            _audioSource.Play();
+            //_audioSource.Play();
+            SoundsManager.Instance.PlaySound(SoundType.TasteThisHook);
             Destroy(caughtItem.gameObject, 1f);
 
             if (!_isGameOver)
@@ -103,17 +104,61 @@ namespace FishingHim.TasteThis
 
         public IEnumerator GameOver(bool isWin)
         {
-            _isGameOver = true;
-            _winPanel.SetActive(isWin);
-            _losePanel.SetActive(!isWin);
+            //_isGameOver = true;
+            //_winPanel.SetActive(isWin);
+            //_losePanel.SetActive(!isWin);
 
-            if (isWin)
-            {
-                yield return new WaitForSeconds(1.5f);
-                SceneLoader.Instance.Load_MainScene();
-            }
+            //SoundsManager.Instance.PlaySound(isWin ? SoundType.TasteThisWin : SoundType.TasteThisLose);
+
+            //if (isWin)
+            //{
+            //    yield return new WaitForSeconds(2f);
+            //    SceneLoader.Instance.Load_MainScene();
+            //}
 
             //Destroy(this);
+
+            _isGameOver = true;
+
+            if (isWin)
+                yield return Win();
+            else
+                yield return Lose();
+        }
+
+        private IEnumerator Win()
+        {
+            StartCoroutine(MoveFisherDown(_fisher.gameObject.transform));
+            SoundsManager.Instance.PlaySound(SoundType.TasteThisWin);
+            yield return new WaitForSeconds(1f);
+            _winPanel.SetActive(true);
+            yield return new WaitForSeconds(3.5f);
+            ProgressManager.instance.Win(2);
+            //SceneLoader.Instance.Load_MainScene();
+        }
+
+        private IEnumerator MoveFisherDown(Transform fisher)
+        {
+            _fisher.Afall();
+            fisher.Translate(new(0f, -1f, 0f));
+            yield return new WaitForSeconds(2f);
+
+            foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+                renderer.enabled = false;
+
+            while (fisher.position.y > -3.5f)
+            {
+                yield return new WaitForSeconds(0.03f);
+                fisher.Translate(new(0.07f, -0.1f, 0f));
+            }
+        }
+
+        private IEnumerator Lose()
+        {
+            _losePanel.SetActive(true);
+            SoundsManager.Instance.PlaySound(SoundType.TasteThisLose);
+            yield return new WaitForSeconds(2f);
+            ProgressManager.instance.Lose();
         }
     }
 }

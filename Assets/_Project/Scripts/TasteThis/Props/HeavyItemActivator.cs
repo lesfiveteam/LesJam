@@ -1,3 +1,4 @@
+using FishingHim.Common;
 using UnityEngine;
 
 namespace FishingHim.TasteThis
@@ -11,14 +12,14 @@ namespace FishingHim.TasteThis
         private SpriteRenderer _renderer;
         private float _mass;
         private Item _item;
-        private AudioSource _audioSource;
+        //private AudioSource _audioSource;
         private bool _isActive = false;
         private Animator _animator;
 
         private void Start()
         {
             _renderer = GetComponentInChildren<SpriteRenderer>();
-            _audioSource = GetComponent<AudioSource>();
+            //_audioSource = GetComponent<AudioSource>();
             _renderer.color = _inactiveColor;
             _player.OnLevelChange += PlayerChangeLevel;
             _mass = GetComponent<Rigidbody2D>().mass;
@@ -41,6 +42,7 @@ namespace FishingHim.TasteThis
             {
                 _renderer.color = _activeColor;
                 //_audioSource.Play();
+                SoundsManager.Instance.PlaySound(SoundType.TasteThisWeight);
                 _isActive = true;
                 _animator.SetBool("IsActive", true);
             }

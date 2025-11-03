@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FishingHim.Common;
 
 namespace FishingHim.TasteThis
 {
@@ -23,7 +24,7 @@ namespace FishingHim.TasteThis
         private SpriteRenderer _renderer;
         private Vector2 _newSpeed;
         private Vector3 _newAngles;
-        private AudioSource _audioSource;
+       // private AudioSource _audioSource;
 
         [SerializeField]
         private GameObject _3dModel;
@@ -42,7 +43,7 @@ namespace FishingHim.TasteThis
         {
             _rb = GetComponent<Rigidbody2D>();
             _renderer = GetComponent<SpriteRenderer>();
-            _audioSource = GetComponent<AudioSource>();
+          //  _audioSource = GetComponent<AudioSource>();
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Props"), true);
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Props"), LayerMask.NameToLayer("Props"), true);
             Hook.Instance.ItemCaught += ItemCaught;
@@ -103,7 +104,8 @@ namespace FishingHim.TasteThis
             {
                 _takenItem = _items.Last();
                 _takenItem.Drag(_itemHandler);
-                _audioSource.Play();
+                //_audioSource.Play();
+                SoundsManager.Instance.PlaySound(SoundType.TasteThisItem);
             }
             else
             {
