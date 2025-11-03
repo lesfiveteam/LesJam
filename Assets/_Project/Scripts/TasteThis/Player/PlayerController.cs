@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 namespace FishingHim.TasteThis
 {
@@ -20,7 +19,7 @@ namespace FishingHim.TasteThis
         private Rigidbody2D _rb;
         private List<Item> _items = new();
         private Item _takenItem;
-        private float _capacity = 1f;
+        public float _capacity = 1f;
         private SpriteRenderer _renderer;
         private Vector2 _newSpeed;
         private Vector3 _newAngles;
@@ -36,6 +35,8 @@ namespace FishingHim.TasteThis
         private float _auraStep;
 
         public event Action<float> OnLevelChange;
+
+        private List<string> _collectedItems = new();
 
         private void Start()
         {
@@ -126,13 +127,18 @@ namespace FishingHim.TasteThis
                 _items.Remove(item);
         }
 
-        private void ItemCaught(Item _)
+        private void ItemCaught(Item item)
         {
+            if (_collectedItems.Contains(item.gameObject.name))
+                return;
+
             if (_capacity < _maxCapacity)
             {
                 _capacity++;
                 SetLevel();
             }
+
+            _collectedItems.Add(item.gameObject.name);
         }
 
         private void FishCaught(object _, EventArgs __)

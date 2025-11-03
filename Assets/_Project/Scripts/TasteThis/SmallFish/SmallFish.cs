@@ -22,10 +22,10 @@ namespace FishingHim.TasteThis
         [SerializeField] private SmallFishType _type;
         private Hook _hook;
 
-        private float _slowSpeed = 0.6f;
+        private float _slowSpeed = 0.8f;
         private float _mediumSpeed = 1f;
         private float _fastSpeed = 1.4f;
-        private float _escapeSpeed = 1f;
+        private float _escapeSpeed = 0.5f;
 
         private float _sinTime = 0f;
         // Ќастраиваемые параметры движени€ средних рыб
@@ -34,7 +34,7 @@ namespace FishingHim.TasteThis
 
         private bool _isEscaping = false;
         private float _escapingTimer = 0f;
-        private float _maxEscapingTimer = 2f;
+        private float _maxEscapingTimer = 6f;
         private float _initYScale;
 
         public SmallFishType FishType 
@@ -44,7 +44,7 @@ namespace FishingHim.TasteThis
         }
 
        // private bool _isWobbling = true;
-        private float _startWobblingSeconds = 3f, _minWobblingSeconds = 0.5f, _maxWobblingSeconds = 2f;
+        private float _startWobblingSeconds = 5f, _minWobblingSeconds = 0.5f, _maxWobblingSeconds = 2f;
         private float _wobblingFactor = 1f;
         private float _noWobblingPeriodMin = 2f, _noWobblingPeriodMax = 10f;
 
@@ -89,7 +89,7 @@ namespace FishingHim.TasteThis
         
         private IEnumerator WobblingProceed()
         {
-            yield return StartWobbling(_startWobblingSeconds, 0.4f);
+            yield return StartWobbling(_startWobblingSeconds, 0.25f);
 
             while (true)
             {
@@ -121,7 +121,7 @@ namespace FishingHim.TasteThis
                         break;
                     case SmallFishType.Medium:
                         _sinTime += Time.deltaTime;
-                        Vector3 baseMovement = transform.right * _mediumSpeed * Time.deltaTime;
+                        Vector3 baseMovement = transform.right * _mediumSpeed * Time.deltaTime *  _wobblingFactor;
                         Vector3 sinOffset = transform.up * Mathf.Sin(_sinTime * _sinFrequency) * _sinAmplitude * Time.deltaTime * _wobblingFactor;
                         transform.position += baseMovement + sinOffset;
                         break;

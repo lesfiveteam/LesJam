@@ -11,6 +11,10 @@ namespace FishingHim.TasteThis
         private int _targetFishesNumber = 10;
         [SerializeField]
         GameObject _winPanel, _losePanel;
+        [SerializeField]
+        Fisher _fisher;
+        [SerializeField]
+        Transform _bait;
         private Animator _animator;
         private float _animDuration;
         private Collider2D _collider;
@@ -18,6 +22,7 @@ namespace FishingHim.TasteThis
         private float _capacity = 2f;
         private AudioSource _audioSource;
         private bool _isGameOver = false;
+        private float _waterYLevel = 0.8f;
 
         public static Hook Instance { get; private set; }
 
@@ -38,11 +43,8 @@ namespace FishingHim.TasteThis
         [SerializeField]
         private Transform _tip;
 
-        public Vector2 GetHookPosition()
-        {
-            return (Vector2)_tip.position;
-        }
-
+        public Vector2 GetHookPosition() => transform.position.y < _waterYLevel ? _tip.position : _bait.position;
+ 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.TryGetComponent<SmallFish>(out var fish))
@@ -81,9 +83,10 @@ namespace FishingHim.TasteThis
 
             _collider.enabled = false;
             _animator.SetBool("IsCatching", true);
+            _animator.SetBool("IsCasting", false);
             caughtItem.Drag(_tip);
             _audioSource.Play();
-            Destroy(caughtItem.gameObject, _animDuration / 2f);
+            Destroy(caughtItem.gameObject, 1f);
 
             if (!_isGameOver)
                 StartCoroutine(Reset());
@@ -91,9 +94,11 @@ namespace FishingHim.TasteThis
 
         private IEnumerator Reset()
         {
-            yield return new WaitForSeconds(_animDuration);
+            yield return new WaitForSeconds(1f);
             _collider.enabled = true;
             _animator.SetBool("IsCatching", false);
+            _animator.SetBool("IsCasting", true);
+            _fisher.Reset();
         }
 
         public IEnumerator GameOver(bool isWin)
@@ -108,7 +113,7 @@ namespace FishingHim.TasteThis
                 SceneLoader.Instance.Load_MainScene();
             }
 
-            Destroy(this);
+            //Destroy(this);
         }
     }
 }
