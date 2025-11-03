@@ -95,7 +95,7 @@ namespace FishingHim.FishAndFisherman.Timer
 
         public void RestartSection()
         {
-            _currentRotationCount = 0;
+            _currentRotationCount = -1;
             UpdateHookCountText();
         }
 
