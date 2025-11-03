@@ -123,8 +123,8 @@ namespace FishingHim.VortexFish.Manager
         private void ExitFromTurbo()
         {
             InTurbo = false;
+            SoundsManager.Instance.StopSound(SoundType.VortexFishTurboEnd);
             SoundsManager.Instance.PlaySound(SoundType.VortexFishSpeedUp);
-            SoundsManager.Instance.PlaySound(SoundType.VortexFishTurboEnd);
             Fish.SetAnimationSpeed(1f);
             RowGenerator.CanGenerate = true;
         }
