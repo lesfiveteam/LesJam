@@ -8,10 +8,40 @@ namespace FishingHim.Common
 {
     public enum SoundType
     {
-        //Здесь писать виды звуков
+        TasteThisMusic,
+        TasteThisItem,
+        TasteThisHook,
+        TasteThisWeight,
+        TasteThisWin,
+        TasteThisLose,
+        VortexFishMusic,
+        VortexFishStart,
+        VortexFishBooster,
+        VortexFishTurboStart,
+        VortexFishSpeedUp,
+        VortexFishTurboEnd,
+        VortexFishTurboCollision,
+        VortexFishCrash,
+        MainMusic,
+        MainClick,
+        MainLoadMiniGame,
+        FishAndFishermanHook1,
+        FishAndFishermanHook2,
+        FishAndFishermanRoll,
+        FishAndFishermanJump,
+        FishAndFishermanFall,
+        FishAndFishermanDamage,
+        FishAndFishermanMusic,
+        FishAndFishermanSection,
+        FishAndFishermanFastMusic1,
+        FishAndFishermanFastMusic2,
+        FishAndFishermanFastMusic3,
+        FishAndFishermanFastMusic4,
+        FishAndFishermanFastMusic5,
+        //Здесь писать виды вуков
     }
 
-    public class SoundsManager : SingletonDontDestroyOnLoad<SoundsManager>
+    public class SoundsManager : Singleton<SoundsManager>
     {
         [SerializeField] private SoundsData[] _soundsDatas;
         private Dictionary<SoundType, AudioClipData> _soundIdPairs = new();

@@ -4,19 +4,21 @@ using FishingHim.FishAndFisherman.Fisherman;
 using FishingHim.FishAndFisherman.Sections;
 using FishingHim.FishAndFisherman.Hook;
 using FishingHim.Common;
+using TMPro;
 
 namespace FishingHim.FishAndFisherman.Timer
 {
     public class TimerManager : Singleton<TimerManager>
     {
-        [Header("Timer Settings")]
         [SerializeField] private int _rotationsPerSection = 5;
         [SerializeField] private float _sectionTransitionDelay = 2f;
         [SerializeField] private float _rotationSpeed = 2f;
         [SerializeField] private float _rotationDelta = 5f;
         [SerializeField] private float _rotationSpeedIncrease = 0.5f;
         [SerializeField] private float _rotationDeltaDecrease = 0.5f;
+        [SerializeField] private float _startingSequenceTime = 3f;
         [SerializeField] private HooksSpawner _hooksSpawner;
+        [SerializeField] private TMP_Text _hooksCountText;
 
         private float _waitTimer = 0f;
         private bool _isWaiting = false;
@@ -27,10 +29,13 @@ namespace FishingHim.FishAndFisherman.Timer
         private void Start()
         {
             StartCoroutine(FishermanRotationCoroutine());
+            UpdateHookCountText();
         }
 
         private IEnumerator FishermanRotationCoroutine()
         {
+            yield return new WaitForSeconds(_startingSequenceTime);
+
             while (true)
             {
                 if (_isInTransition)
@@ -47,6 +52,7 @@ namespace FishingHim.FishAndFisherman.Timer
                         FishermanRotation.Instance.SwitchDirection();
                         _hasSpawnedHook = false;
                         _currentRotationCount++;
+                        UpdateHookCountText();
 
                         if (_currentRotationCount >= _rotationsPerSection)
                         {
@@ -82,6 +88,7 @@ namespace FishingHim.FishAndFisherman.Timer
             SectionsContoroller.Instance.GoToNextSection();
             IncreaseDifficulty();
             _currentRotationCount = 0;
+            UpdateHookCountText();
             yield return new WaitForSeconds(_sectionTransitionDelay);
             _isInTransition = false;
         }
@@ -89,6 +96,12 @@ namespace FishingHim.FishAndFisherman.Timer
         public void RestartSection()
         {
             _currentRotationCount = 0;
+            UpdateHookCountText();
+        }
+
+        private void UpdateHookCountText()
+        {
+            _hooksCountText.text = (_currentRotationCount + 1) + "/" + _rotationsPerSection;
         }
 
         public void IncreaseDifficulty()
