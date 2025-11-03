@@ -1,3 +1,4 @@
+using FishingHim.Common;
 using FishingHim.VortexFish.Manager;
 
 namespace FishingHim.VortexFish.CollectedItem
@@ -14,6 +15,7 @@ namespace FishingHim.VortexFish.CollectedItem
                 VortexFishManager.AddBoost();
             }
 
+            SoundsManager.Instance.PlaySound(SoundType.VortexFishBooster);
             Destroy(gameObject);
         }
     }

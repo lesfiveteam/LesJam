@@ -39,6 +39,8 @@ namespace FishingHim.VortexFish.Manager
         [SerializeField]
         private float animationSpeedInTurbo = 3f;
 
+        public bool IsEndGame = false;
+
         private void Awake()
         {
             if (_instance == null)
@@ -62,6 +64,12 @@ namespace FishingHim.VortexFish.Manager
             {
                 Debug.LogError("Не заполнен RowGenerator");
             }
+        }
+
+        private void Start()
+        {
+            SoundsManager.Instance.PlaySound(SoundType.VortexFishStart);
+            SoundsManager.Instance.PlaySound(SoundType.VortexFishMusic);
         }
 
         /**
@@ -89,7 +97,7 @@ namespace FishingHim.VortexFish.Manager
             }
         }
         /**
-         * Возвращает истину, если игрок находится в состоянии ярости
+         * Возвращает истину, если игрок находится в состоянии турбо
          */
         public static bool InTurboMode()
         {
@@ -111,6 +119,8 @@ namespace FishingHim.VortexFish.Manager
         private void ExitFromTurbo()
         {
             InTurbo = false;
+            SoundsManager.Instance.PlaySound(SoundType.VortexFishSpeedUp);
+            SoundsManager.Instance.PlaySound(SoundType.VortexFishTurboEnd);
             Fish.SetAnimationSpeed(1f);
             RowGenerator.CanGenerate = true;
         }
@@ -120,6 +130,8 @@ namespace FishingHim.VortexFish.Manager
         private void EnterInTurbo()
         {
             InTurbo = true;
+            SoundsManager.Instance.PlaySound(SoundType.VortexFishTurboStart);
+            SoundsManager.Instance.PlaySound(SoundType.VortexFishSpeedUp);
             StartCoroutine(WaitAndStopGenerate());
             StartCoroutine(WaitAndExitFromTurbo());
             Fish.SetAnimationSpeed(animationSpeedInTurbo);
