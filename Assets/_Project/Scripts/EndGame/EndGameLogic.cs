@@ -31,7 +31,10 @@ public class EndGameLogic : MonoBehaviour
         }
         else
         {
-            _currentSprite = ProgressManager.instance.IsWinGame ? _winMinigameSprite : _defeatMinigameSprite;
+            if (ProgressManager.instance.IsWinGame)
+                _currentSprite = _winGameSprite;
+            else
+                _currentSprite = ProgressManager.instance.IsWinMiniGame ? _winMinigameSprite : _defeatMinigameSprite;
         }
         
         _background.sprite = _currentSprite;
