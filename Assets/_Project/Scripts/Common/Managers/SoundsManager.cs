@@ -56,7 +56,7 @@ namespace FishingHim.Common
                 _soundIdPairs.Add(soundData.SoundType, soundData.AudioClipData);
         }
 
-        public void PlaySound(SoundType soundType)
+        public void PlaySound(SoundType soundType, bool stopPreviousSound = false)
         {
             if (!_soundIdPairs.ContainsKey(soundType))
             {
@@ -69,6 +69,10 @@ namespace FishingHim.Common
 
             _soundIdPairs[soundType].IsOnCooldown = true;
             StartCoroutine(ResetCoolDown(soundType));
+
+            if (stopPreviousSound)
+                _soundIdPairs[soundType].AudioSource.Stop();
+
             _soundIdPairs[soundType].AudioSource?.PlayOneShot(_soundIdPairs[soundType].AudioClip);
         }
 

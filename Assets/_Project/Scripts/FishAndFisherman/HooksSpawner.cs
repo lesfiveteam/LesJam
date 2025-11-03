@@ -1,5 +1,6 @@
-using UnityEngine;
+using FishingHim.Common;
 using FishingHim.FishAndFisherman.Sections;
+using UnityEngine;
 
 namespace FishingHim.FishAndFisherman.Hook
 {
@@ -37,10 +38,12 @@ namespace FishingHim.FishAndFisherman.Hook
             if (_isEven)
             {
                 hookHolderToSpawn = _leftHookHolder;
+                SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanHook1);
             }
             else
             {
                 hookHolderToSpawn = _rightHookHolder;
+                SoundsManager.Instance.PlaySound(SoundType.FishAndFishermanHook2);
             }
 
             _currentHookHolder = Instantiate(hookHolderToSpawn, _spawnPositions[randomIndex].position, _leftHookHolder.transform.rotation);
