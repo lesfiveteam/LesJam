@@ -52,6 +52,8 @@ namespace FishingHim.Common
             CompletedGamesArray = new bool[NUMBER_OF_GAMES];
             numOfCompletedGames = 0;
             numOfDeaths = 0;
+            IsWinGame = false;
+            IsWinMiniGame = false;
         }
 
         //completedLevelNumber начинается с 0
