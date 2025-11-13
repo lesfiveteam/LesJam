@@ -25,6 +25,7 @@ namespace FishingHim.TasteThis
         private float _waterYLevel = 0.8f;
 
         public static Hook Instance { get; private set; }
+        public int TargetFishesNumber => _targetFishesNumber;
 
         private void Awake()
         {
