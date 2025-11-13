@@ -1,35 +1,25 @@
 using FishingHim.VortexFish.Manager;
-using System.Collections;
 using UnityEngine;
 
 namespace FishingHim.VortexFish
 {
-    // Класс для движение окружения
+    // РљР»Р°СЃСЃ РґР»СЏ РґРІРёР¶РµРЅРёРµ РѕРєСЂСѓР¶РµРЅРёСЏ
     public class EnviromentMovement : MonoBehaviour
     {
-        private float lifeTime = 8f;
+        [SerializeField] private float _lifeTime = 8f;
 
-        private void Start()
+        private void Awake()
         {
-            // Даём время жизни объекту - чтобы не улетал в бесконечность
-            StartCoroutine(WaitAndDestroy());
+            Destroy(gameObject, _lifeTime);
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             float speed = VortexFishManager.InTurboMode()
                 ? VortexFishManager.Instance.TurboSpeed 
                 : VortexFishManager.Instance.Speed;
-            // Обновляем позицию напрямую
+            // РћР±РЅРѕРІР»СЏРµРј РїРѕР·РёС†РёСЋ РЅР°РїСЂСЏРјСѓСЋ
             transform.position += Vector3.back * speed * Time.deltaTime;
         }
-
-        // Ждёт и уничтожает объект
-        private IEnumerator WaitAndDestroy()
-        {
-            yield return new WaitForSeconds(lifeTime);
-            Destroy(gameObject);
-        }
     }
-
 }
