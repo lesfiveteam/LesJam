@@ -20,6 +20,7 @@ namespace FishingHim.VortexFish.Manager
         public TMP_Text FishermanCountTMPro;
         public GameObject UITutorial = null;
         [SerializeField] private Button exitButton;
+        [SerializeField] private float tutorialWaitTime;
 
         [Header("Баланс настройки")]
         private int boostCount = 0;
@@ -49,7 +50,10 @@ namespace FishingHim.VortexFish.Manager
         private float animationSpeedInTurbo = 3f;
 
         public bool IsEndGame = false;
-
+        
+        private bool isTutorialShown = false;
+        
+        public bool IsTutorialShown => isTutorialShown;
 
         private void Awake()
         {
@@ -190,11 +194,11 @@ namespace FishingHim.VortexFish.Manager
         private IEnumerator WaitAndShowTutorial()
         {
             exitButton.interactable = false;
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(tutorialWaitTime);
             UITutorial.SetActive(true);
             Time.timeScale = 0f;
+            isTutorialShown = true;
             exitButton.interactable = true;
         }
     }
 }
-

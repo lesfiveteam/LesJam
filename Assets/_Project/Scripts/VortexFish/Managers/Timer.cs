@@ -10,9 +10,14 @@ namespace FishingHim.VortexFish.Managers
         [SerializeField] private float _time;
         [SerializeField] private TMP_Text _timerText;
 
+        private void Awake()
+        {
+            UpdateTimerText();
+        }
+
         private void Update()
         {
-            if (VortexFishManager.Instance.IsEndGame)
+            if (VortexFishManager.Instance.IsEndGame || !VortexFishManager.Instance.IsTutorialShown)
                 return;
 
             if(_time <= 0)
